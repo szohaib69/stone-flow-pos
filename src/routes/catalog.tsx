@@ -107,7 +107,7 @@ function CatalogPage() {
   );
 
   const update = (patch: Partial<CatalogSearch>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+    navigate({ search: (prev: CatalogSearch) => ({ ...prev, ...patch }) });
 
   return (
     <SiteShell>
