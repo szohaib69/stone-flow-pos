@@ -4,8 +4,8 @@ import { ShieldCheck, Truck, Hammer, Ruler } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteShell, BUSINESS } from "@/components/site/SiteShell";
 import { CATEGORIES } from "@/lib/catalog";
-import heroImg from "@/assets/hero-marble.jpg";
-import factoryImg from "@/assets/factory.jpg";
+const heroImg = "/images/hero-marble.jpg";
+const factoryImg = "/images/factory.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({

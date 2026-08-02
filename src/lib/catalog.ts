@@ -1,8 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
-import marbleImg from "@/assets/cat-marble.jpg";
-import tilesImg from "@/assets/cat-tiles.jpg";
-import chipsImg from "@/assets/cat-chips.jpg";
-import sanitaryImg from "@/assets/cat-sanitary.jpg";
+const marbleImg = "/images/cat-marble.jpg";
+const tilesImg = "/images/cat-tiles.jpg";
+const chipsImg = "/images/cat-chips.jpg";
+const sanitaryImg = "/images/cat-sanitary.jpg";
 
 export type Category = "marble" | "tiles" | "chips" | "sanitary";
 
