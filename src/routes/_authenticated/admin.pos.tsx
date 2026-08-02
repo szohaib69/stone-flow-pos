@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { Trash2, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Trash2, Search, ScanLine, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { currency, fetchProducts, type Product } from "@/lib/catalog";
 import { fetchCustomers, type PaymentMethod } from "@/lib/pos";
+import { CameraScanner } from "@/components/admin/BarcodeScanner";
 
 export const Route = createFileRoute("/_authenticated/admin/pos")({
   component: PosPage,
@@ -25,6 +26,10 @@ function PosPage() {
   const { data: customers = [] } = useQuery({ queryKey: ["customers"], queryFn: fetchCustomers });
 
   const [query, setQuery] = useState("");
+  const [scan, setScan] = useState("");
+  const [cameraOn, setCameraOn] = useState(false);
+  const scanRef = useRef<HTMLInputElement>(null);
+  const lastScan = useRef<{ code: string; at: number }>({ code: "", at: 0 });
   const [lines, setLines] = useState<Line[]>([]);
   const [customerId, setCustomerId] = useState("");
   const [walkIn, setWalkIn] = useState("Walk-in customer");
@@ -55,6 +60,33 @@ function PosPage() {
       return [...prev, { product, qty: 1 }];
     });
   }
+
+  const handleScan = useCallback(
+    (raw: string) => {
+      const code = raw.trim();
+      if (!code) return;
+      const now = Date.now();
+      if (lastScan.current.code === code && now - lastScan.current.at < 1200) return;
+      lastScan.current = { code, at: now };
+
+      const match = products.find(
+        (p) =>
+          (p.barcode && p.barcode.toLowerCase() === code.toLowerCase()) ||
+          (p.sku && p.sku.toLowerCase() === code.toLowerCase()),
+      );
+      if (!match) {
+        toast.error(`No product with barcode ${code}`);
+        return;
+      }
+      addLine(match);
+      toast.success(`${match.name} added`);
+    },
+    [products],
+  );
+
+  useEffect(() => {
+    scanRef.current?.focus();
+  }, []);
 
   const checkout = useMutation({
     mutationFn: async () => {
@@ -123,6 +155,40 @@ function PosPage() {
     <AdminShell title="Point of Sale">
       <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
         <div className="rounded-lg border border-border bg-card p-4">
+          <div className="mb-4 rounded-md border border-brass/40 bg-brass/5 p-3">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <div className="relative flex-1">
+                <ScanLine className="absolute left-3 top-2.5 size-4 text-brass" />
+                <Input
+                  ref={scanRef}
+                  className="pl-9"
+                  placeholder="Scan barcode here — item is added automatically"
+                  value={scan}
+                  onChange={(e) => setScan(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleScan(scan);
+                      setScan("");
+                    }
+                  }}
+                />
+              </div>
+              <Button
+                variant="stone"
+                onClick={() => setCameraOn((v) => !v)}
+                className="sm:w-auto"
+              >
+                <Camera className="size-4" /> {cameraOn ? "Stop camera" : "Use camera"}
+              </Button>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Keep this field focused for a USB or Bluetooth scanner, or scan with the tablet camera.
+            </p>
+            {cameraOn && (
+              <CameraScanner onDetected={handleScan} onClose={() => setCameraOn(false)} />
+            )}
+          </div>
           <div className="relative">
             <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
             <Input
