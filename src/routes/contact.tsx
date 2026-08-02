@@ -63,8 +63,8 @@ function ContactPage() {
 
           <div className="overflow-hidden border border-border">
             <iframe
-              title="Map showing City Tiles"
-              src="https://www.google.com/maps?q=Bagh,%20Azad%20Kashmir&output=embed"
+              title="Map showing City Tiles, Abbottabad"
+              src="https://www.google.com/maps?q=34.1576975,73.2551814&z=17&output=embed"
               className="h-72 w-full"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

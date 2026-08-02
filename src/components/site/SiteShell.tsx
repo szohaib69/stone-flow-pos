@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export const BUSINESS = {
   name: "City Tiles",
-  short: "Bagh Marble",
+  short: "City Tiles",
   phone: "+92 300 1234567",
   phoneHref: "tel:+923001234567",
   whatsapp: "https://wa.me/923001234567",
@@ -29,9 +29,9 @@ function Wordmark({ tone = "dark" }: { tone?: "dark" | "light" }) {
       <span
         className={`font-display text-2xl leading-none ${tone === "light" ? "text-ivory" : "text-foreground"}`}
       >
-        Bagh
+        City
       </span>
-      <span className="eyebrow text-brass">Marble &amp; Tiles</span>
+      <span className="eyebrow text-brass">Tiles</span>
     </Link>
   );
 }
