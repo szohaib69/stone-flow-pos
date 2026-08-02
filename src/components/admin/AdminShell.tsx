@@ -49,7 +49,7 @@ export function AdminShell({
       <aside className="border-b border-border bg-card lg:min-h-screen lg:w-60 lg:border-b-0 lg:border-r">
         <div className="flex items-center gap-2 px-5 py-5">
           <Store className="size-5 text-brass" />
-          <span className="font-display text-lg leading-none">Bagh POS</span>
+          <span className="font-display text-lg leading-none">City Tiles POS</span>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:overflow-visible">
           {NAV.map((item) => (

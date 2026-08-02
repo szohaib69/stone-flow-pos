@@ -26,6 +26,7 @@ export const Route = createFileRoute("/_authenticated/admin/inventory")({
 type Draft = {
   name: string;
   sku: string;
+  barcode: string;
   category: Category;
   description: string;
   color: string;
@@ -40,6 +41,7 @@ type Draft = {
 const emptyDraft: Draft = {
   name: "",
   sku: "",
+  barcode: "",
   category: "marble",
   description: "",
   color: "",
@@ -55,6 +57,7 @@ function toDraft(p: Product): Draft {
   return {
     name: p.name,
     sku: p.sku ?? "",
+    barcode: p.barcode ?? "",
     category: p.category,
     description: p.description ?? "",
     color: p.color ?? "",
@@ -86,6 +89,7 @@ function InventoryPage() {
       const payload = {
         name: draft.name.trim(),
         sku: draft.sku.trim() || null,
+        barcode: draft.barcode.trim() || null,
         category: draft.category,
         description: draft.description.trim(),
         color: draft.color.trim() || null,
@@ -165,6 +169,10 @@ function InventoryPage() {
               <div className="space-y-2">
                 <Label>Reference / SKU</Label>
                 <Input {...field("sku")} maxLength={40} />
+              </div>
+              <div className="space-y-2">
+                <Label>Barcode</Label>
+                <Input {...field("barcode")} maxLength={64} placeholder="Scan or type barcode" />
               </div>
               <div className="space-y-2">
                 <Label>Colour</Label>

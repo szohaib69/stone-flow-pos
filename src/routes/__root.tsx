@@ -78,14 +78,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Bagh Marble & Tiles Factory" },
+      { title: "City Tiles" },
       {
         name: "description",
         content:
           "Natural marble, tiles, flooring chips and sanitary ware supplied direct from the factory.",
       },
-      { name: "author", content: "Bagh Marble & Tiles Factory" },
-      { property: "og:title", content: "Bagh Marble & Tiles Factory" },
+      { name: "author", content: "City Tiles" },
+      { property: "og:title", content: "City Tiles" },
       {
         property: "og:description",
         content:

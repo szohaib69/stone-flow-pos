@@ -10,6 +10,7 @@ export type Product = {
   id: string;
   name: string;
   sku: string | null;
+  barcode: string | null;
   category: Category;
   description: string;
   color: string | null;
