@@ -2,8 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { SiteShell, PageHeader } from "@/components/site/SiteShell";
 import { Button } from "@/components/ui/button";
-import factoryImg from "@/assets/factory.jpg";
-import marbleImg from "@/assets/cat-marble.jpg";
+const factoryImg = "/images/factory.jpg";
+const marbleImg = "/images/cat-marble.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
