@@ -11,12 +11,12 @@ import { lovable } from "@/integrations/lovable/index";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Staff Sign In — Bagh Marble & Tiles" },
+      { title: "Staff Sign In — City Tiles" },
       {
         name: "description",
-        content: "Sign in to the Bagh Marble & Tiles point-of-sale and inventory dashboard.",
+        content: "Sign in to the City Tiles point-of-sale and inventory dashboard.",
       },
-      { property: "og:title", content: "Staff Sign In — Bagh Marble & Tiles" },
+      { property: "og:title", content: "Staff Sign In — City Tiles" },
       { property: "og:description", content: "Point-of-sale and inventory dashboard access." },
       { name: "robots", content: "noindex" },
     ],
@@ -85,7 +85,7 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-[--marble-black] px-5 py-16">
       <div className="w-full max-w-md border border-border/40 bg-card p-8 md:p-10 shadow-stone">
         <Link to="/" className="eyebrow text-brass">
-          ← Bagh Marble &amp; Tiles
+          ← City Tiles
         </Link>
         <h1 className="mt-5 text-3xl">{mode === "signin" ? "Staff sign in" : "Create staff account"}</h1>
         <p className="mt-2 text-sm text-muted-foreground">

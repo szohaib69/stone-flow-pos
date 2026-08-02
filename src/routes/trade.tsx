@@ -6,13 +6,13 @@ import { InquiryForm } from "@/components/site/InquiryForm";
 export const Route = createFileRoute("/trade")({
   head: () => ({
     meta: [
-      { title: "Bulk & Trade Pricing — Bagh Marble & Tiles" },
+      { title: "Bulk & Trade Pricing — City Tiles" },
       {
         name: "description",
         content:
           "Contractors, builders and architects: request bulk pricing on marble, tiles, terrazzo chips and sanitary ware with site delivery.",
       },
-      { property: "og:title", content: "Bulk & Trade Inquiries — Bagh Marble & Tiles" },
+      { property: "og:title", content: "Bulk & Trade Inquiries — City Tiles" },
       {
         property: "og:description",
         content: "Project rates, credit terms and site delivery for trade buyers.",

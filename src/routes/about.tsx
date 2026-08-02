@@ -8,13 +8,13 @@ import marbleImg from "@/assets/cat-marble.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About the Factory — Bagh Marble & Tiles" },
+      { title: "About the Factory — City Tiles" },
       {
         name: "description",
         content:
-          "How Bagh Marble & Tiles Factory sources blocks, cuts and finishes stone, and checks quality before it leaves the yard.",
+          "How City Tiles sources blocks, cuts and finishes stone, and checks quality before it leaves the yard.",
       },
-      { property: "og:title", content: "About Bagh Marble & Tiles Factory" },
+      { property: "og:title", content: "About City Tiles" },
       {
         property: "og:description",
         content: "Quarry sourcing, in-house cutting and finishing, and our quality standards.",
@@ -52,7 +52,7 @@ function AboutPage() {
     <SiteShell>
       <PageHeader
         eyebrow="Our story"
-        title="A family stone factory in the hills of Bagh"
+        title="A family stone factory in the hills of Abbottabad"
         intro="What began in 1996 as a single cutting frame is now a full marble, tile, chip and sanitary supply house serving homeowners, architects and contractors."
       />
 

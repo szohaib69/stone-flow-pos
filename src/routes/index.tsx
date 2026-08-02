@@ -10,13 +10,13 @@ import factoryImg from "@/assets/factory.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Bagh Marble & Tiles Factory — Marble, Tiles, Chips & Sanitary" },
+      { title: "City Tiles — Marble, Tiles, Chips & Sanitary" },
       {
         name: "description",
         content:
-          "Factory-direct natural marble, porcelain tiles, terrazzo flooring chips and sanitary ware for homes, architects and contractors in Bagh, AJK.",
+          "Factory-direct natural marble, porcelain tiles, terrazzo flooring chips and sanitary ware for homes, architects and contractors in Abbottabad.",
       },
-      { property: "og:title", content: "Bagh Marble & Tiles Factory" },
+      { property: "og:title", content: "City Tiles" },
       {
         property: "og:description",
         content:
@@ -48,7 +48,7 @@ function Index() {
         <div className="absolute inset-0 bg-gradient-to-r from-marble-black via-marble-black/70 to-transparent" />
         <div className="relative mx-auto grid max-w-7xl px-5 py-28 md:py-40">
           <div className="max-w-2xl">
-            <p className="eyebrow text-brass">Bagh, Azad Kashmir · Since 1996</p>
+            <p className="eyebrow text-brass">Abbottabad, Khyber Pakhtunkhwa · Since 1996</p>
             <h1 className="mt-6 text-5xl leading-[1.05] text-ivory md:text-7xl">
               Natural stone, cut and finished at our own factory.
             </h1>
@@ -130,7 +130,7 @@ function Index() {
           />
           <div>
             <p className="eyebrow text-brass">The factory</p>
-            <h2 className="mt-3 text-4xl md:text-5xl">Three decades of cutting stone in Bagh</h2>
+            <h2 className="mt-3 text-4xl md:text-5xl">Three decades of cutting stone in Abbottabad</h2>
             <p className="mt-6 text-muted-foreground">
               We buy blocks straight from the quarries of Azad Kashmir and Balochistan, then saw,
               hone and polish them on our own lines. That means fewer hands between the mountain and

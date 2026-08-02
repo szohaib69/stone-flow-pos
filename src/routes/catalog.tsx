@@ -21,13 +21,13 @@ export const Route = createFileRoute("/catalog")({
   }),
   head: () => ({
     meta: [
-      { title: "Product Catalog — Bagh Marble & Tiles Factory" },
+      { title: "Product Catalog — City Tiles" },
       {
         name: "description",
         content:
           "Browse marble slabs, porcelain and ceramic tiles, terrazzo flooring chips and sanitary ware with sizes, finishes and factory prices.",
       },
-      { property: "og:title", content: "Product Catalog — Bagh Marble & Tiles" },
+      { property: "og:title", content: "Product Catalog — City Tiles" },
       {
         property: "og:description",
         content: "Marble, tiles, flooring chips and sanitary ware with factory-direct pricing.",

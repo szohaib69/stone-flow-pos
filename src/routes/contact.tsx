@@ -7,13 +7,13 @@ import { InquiryForm } from "@/components/site/InquiryForm";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact & Yard Location — Bagh Marble & Tiles" },
+      { title: "Contact & Yard Location — City Tiles" },
       {
         name: "description",
         content:
-          "Call, WhatsApp or visit Bagh Marble & Tiles Factory on Main Kohala Road, Bagh, Azad Kashmir. Send an inquiry and we reply the same day.",
+          "Call, WhatsApp or visit City Tiles on Mansehra Road, Abbottabad, Khyber Pakhtunkhwa. Send an inquiry and we reply the same day.",
       },
-      { property: "og:title", content: "Contact Bagh Marble & Tiles Factory" },
+      { property: "og:title", content: "Contact City Tiles" },
       {
         property: "og:description",
         content: "Phone, WhatsApp, yard location and inquiry form.",
@@ -63,7 +63,7 @@ function ContactPage() {
 
           <div className="overflow-hidden border border-border">
             <iframe
-              title="Map showing Bagh Marble & Tiles Factory"
+              title="Map showing City Tiles"
               src="https://www.google.com/maps?q=Bagh,%20Azad%20Kashmir&output=embed"
               className="h-72 w-full"
               loading="lazy"

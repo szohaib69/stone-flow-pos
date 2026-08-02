@@ -5,13 +5,13 @@ import { Menu, X, Phone, MessageCircle, MapPin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const BUSINESS = {
-  name: "Bagh Marble & Tiles Factory",
+  name: "City Tiles",
   short: "Bagh Marble",
   phone: "+92 300 1234567",
   phoneHref: "tel:+923001234567",
   whatsapp: "https://wa.me/923001234567",
-  email: "sales@baghmarble.com",
-  address: "Main Kohala Road, Bagh, Azad Kashmir",
+  email: "sales@citytiles.com.pk",
+  address: "Mansehra Road, Abbottabad, Khyber Pakhtunkhwa",
   hours: "Mon – Sat · 8:00 am – 7:00 pm",
 };
 
@@ -43,7 +43,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background">
       <div className="bg-marble-black text-ivory/70">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-5 py-2 text-xs">
-          <span className="tracking-wide">Factory-direct supply since 1996 · Bagh, AJK</span>
+          <span className="tracking-wide">Factory-direct supply since 1996 · Abbottabad</span>
           <div className="flex items-center gap-5">
             <a href={BUSINESS.phoneHref} className="flex items-center gap-1.5 hover:text-brass">
               <Phone className="size-3" /> {BUSINESS.phone}
@@ -119,7 +119,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Wordmark tone="light" />
             <p className="mt-4 max-w-sm text-sm leading-relaxed">
               Quarry-sourced marble, tiles, terrazzo chips and sanitary ware, cut and finished at our
-              own factory in Bagh and supplied to homeowners, architects and contractors.
+              own factory in Abbottabad and supplied to homeowners, architects and contractors.
             </p>
           </div>
           <div>

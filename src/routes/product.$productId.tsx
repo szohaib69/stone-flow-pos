@@ -11,13 +11,13 @@ import { categoryMeta, currency, fetchProduct, fetchProducts, productImage } fro
 export const Route = createFileRoute("/product/$productId")({
   head: () => ({
     meta: [
-      { title: "Product Details — Bagh Marble & Tiles" },
+      { title: "Product Details — City Tiles" },
       {
         name: "description",
         content:
-          "Specifications, available colours and finishes, and factory pricing for this product from Bagh Marble & Tiles Factory.",
+          "Specifications, available colours and finishes, and factory pricing for this product from City Tiles.",
       },
-      { property: "og:title", content: "Product Details — Bagh Marble & Tiles" },
+      { property: "og:title", content: "Product Details — City Tiles" },
       {
         property: "og:description",
         content: "Specifications, finishes and factory pricing.",
