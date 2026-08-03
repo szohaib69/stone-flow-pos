@@ -48,7 +48,7 @@ function Index() {
         <div className="absolute inset-0 bg-gradient-to-r from-marble-black via-marble-black/70 to-transparent" />
         <div className="relative mx-auto grid max-w-7xl px-5 py-28 md:py-40">
           <div className="max-w-2xl">
-            <p className="eyebrow text-brass">Abbottabad, Khyber Pakhtunkhwa · Since 1996</p>
+            <p className="eyebrow text-brass">Abbottabad, Khyber Pakhtunkhwa · Since 2015</p>
             <h1 className="mt-6 text-5xl leading-[1.05] text-ivory md:text-7xl">
               Natural stone, cut and finished at our own factory.
             </h1>
@@ -130,7 +130,7 @@ function Index() {
           />
           <div>
             <p className="eyebrow text-brass">The factory</p>
-            <h2 className="mt-3 text-4xl md:text-5xl">Three decades of cutting stone in Abbottabad</h2>
+            <h2 className="mt-3 text-4xl md:text-5xl">Eleven years of cutting stone in Abbottabad</h2>
             <p className="mt-6 text-muted-foreground">
               We buy blocks straight from the quarries of Azad Kashmir and Balochistan, then saw,
               hone and polish them on our own lines. That means fewer hands between the mountain and
@@ -138,7 +138,7 @@ function Index() {
             </p>
             <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
               {[
-                ["29+", "Years supplying"],
+                ["11", "Years supplying"],
                 ["120k", "Sq.ft in stock"],
                 ["400+", "Trade accounts"],
               ].map(([value, label]) => (
