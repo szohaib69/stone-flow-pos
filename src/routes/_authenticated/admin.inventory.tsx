@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Camera, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { CameraScanner } from "@/components/admin/BarcodeScanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -83,6 +85,8 @@ function InventoryPage() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [filter, setFilter] = useState<Category | "all">("all");
+  const [cameraOn, setCameraOn] = useState(false);
+  const barcodeRef = useRef<HTMLInputElement>(null);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -172,7 +176,54 @@ function InventoryPage() {
               </div>
               <div className="space-y-2">
                 <Label>Barcode</Label>
-                <Input {...field("barcode")} maxLength={64} placeholder="Scan or type barcode" />
+                <div className="relative">
+                  <ScanLine className="pointer-events-none absolute left-3 top-2.5 size-4 text-brass" />
+                  <Input
+                    ref={barcodeRef}
+                    className="pl-9"
+                    {...field("barcode")}
+                    maxLength={64}
+                    placeholder="Scan or type barcode"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        barcodeRef.current?.blur();
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setDraft((d) => ({ ...d, barcode: "" }));
+                      barcodeRef.current?.focus();
+                      toast.info("Ready — scan the barcode now");
+                    }}
+                  >
+                    <ScanLine className="size-4" /> Scan with reader
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setCameraOn((v) => !v)}
+                  >
+                    <Camera className="size-4" /> {cameraOn ? "Close camera" : "Camera"}
+                  </Button>
+                </div>
+                {cameraOn && (
+                  <CameraScanner
+                    onDetected={(code) => {
+                      setDraft((d) => ({ ...d, barcode: code }));
+                      setCameraOn(false);
+                      toast.success(`Barcode captured: ${code}`);
+                    }}
+                    onClose={() => setCameraOn(false)}
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Colour</Label>

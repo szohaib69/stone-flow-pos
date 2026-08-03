@@ -1,19 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { BUSINESS } from "@/components/site/SiteShell";
 import { supabase } from "@/integrations/supabase/client";
 import { currency } from "@/lib/catalog";
-import { formatDate, type Invoice, type InvoiceItem } from "@/lib/pos";
+import { formatDate, markInvoicePaid, type Invoice, type InvoiceItem } from "@/lib/pos";
 
 export const Route = createFileRoute("/_authenticated/admin/invoices/$invoiceId")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    print: search['print'] === "1" || search['print'] === true ? true : undefined,
+  }),
   component: InvoiceDetailPage,
 });
 
 function InvoiceDetailPage() {
   const { invoiceId } = Route.useParams();
+  const { print } = Route.useSearch();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["invoice", invoiceId],
@@ -35,6 +42,25 @@ function InvoiceDetailPage() {
   const items = data?.items ?? [];
   const balance = invoice ? Math.max(0, Number(invoice.total) - Number(invoice.amount_paid)) : 0;
 
+  useEffect(() => {
+    if (print && invoice) {
+      const t = setTimeout(() => window.print(), 400);
+      return () => clearTimeout(t);
+    }
+    return;
+  }, [print, invoice]);
+
+  const clearPayment = useMutation({
+    mutationFn: () => markInvoicePaid(invoice!),
+    onSuccess: () => {
+      toast.success("Payment marked as cleared");
+      queryClient.invalidateQueries({ queryKey: ["invoice", invoiceId] });
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   return (
     <AdminShell
       title="Invoice"
@@ -43,6 +69,16 @@ function InvoiceDetailPage() {
           <Button size="sm" variant="outline" asChild>
             <Link to="/admin/invoices">Back</Link>
           </Button>
+          {balance > 0 && (
+            <Button
+              size="sm"
+              variant="stone"
+              disabled={clearPayment.isPending}
+              onClick={() => clearPayment.mutate()}
+            >
+              Payment cleared
+            </Button>
+          )}
           <Button size="sm" variant="brass" onClick={() => window.print()}>
             Print / Save PDF
           </Button>
@@ -123,7 +159,7 @@ function InvoiceDetailPage() {
             </div>
             <div className="flex justify-between font-medium">
               <span>Balance due</span>
-              <span>{currency(balance)}</span>
+              <span>{balance > 0 ? currency(balance) : "Cleared"}</span>
             </div>
           </div>
 

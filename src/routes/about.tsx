@@ -53,7 +53,7 @@ function AboutPage() {
       <PageHeader
         eyebrow="Our story"
         title="A family stone factory in the hills of Abbottabad"
-        intro="What began in 1996 as a single cutting frame is now a full marble, tile, chip and sanitary supply house serving homeowners, architects and contractors."
+        intro="What began in 2015 as a single cutting frame is now a full marble, tile, chip and sanitary supply house serving homeowners, architects and contractors."
       />
 
       <section className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-24 lg:grid-cols-2">

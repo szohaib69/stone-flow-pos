@@ -1,20 +1,36 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Printer, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { currency } from "@/lib/catalog";
-import { fetchInvoices, formatDate } from "@/lib/pos";
+import { fetchInvoices, formatDate, markInvoicePaid, type Invoice } from "@/lib/pos";
 
 export const Route = createFileRoute("/_authenticated/admin/invoices/")({
   component: InvoicesPage,
 });
 
 function InvoicesPage() {
+  const queryClient = useQueryClient();
   const { data: invoices = [], isLoading } = useQuery({
     queryKey: ["invoices"],
     queryFn: fetchInvoices,
   });
+
+  const clearPayment = useMutation({
+    mutationFn: (invoice: Invoice) => markInvoicePaid(invoice),
+    onSuccess: () => {
+      toast.success("Payment marked as cleared");
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const printInvoice = (id: string) =>
+    window.open(`/admin/invoices/${id}?print=1`, "_blank", "noopener");
 
   return (
     <AdminShell
@@ -35,24 +51,27 @@ function InvoicesPage() {
               <th className="px-4 py-3">Payment</th>
               <th className="px-4 py-3 text-right">Total</th>
               <th className="px-4 py-3 text-right">Balance</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-muted-foreground">
+                <td colSpan={7} className="px-4 py-6 text-muted-foreground">
                   Loading invoices…
                 </td>
               </tr>
             )}
             {!isLoading && invoices.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-muted-foreground">
+                <td colSpan={7} className="px-4 py-6 text-muted-foreground">
                   No invoices yet — create one from the Point of Sale screen.
                 </td>
               </tr>
             )}
-            {invoices.map((inv) => (
+            {invoices.map((inv) => {
+              const balance = Math.max(0, Number(inv.total) - Number(inv.amount_paid));
+              return (
               <tr key={inv.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-3">
                   <Link
@@ -69,11 +88,31 @@ function InvoicesPage() {
                   {inv.payment_method}
                 </td>
                 <td className="px-4 py-3 text-right">{currency(inv.total)}</td>
-                <td className="px-4 py-3 text-right">
-                  {currency(Math.max(0, Number(inv.total) - Number(inv.amount_paid)))}
+                <td
+                  className={`px-4 py-3 text-right ${balance > 0 ? "text-destructive" : "text-muted-foreground"}`}
+                >
+                  {balance > 0 ? currency(balance) : "Cleared"}
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex justify-end gap-2">
+                    {balance > 0 && (
+                      <Button
+                        size="sm"
+                        variant="brass"
+                        disabled={clearPayment.isPending}
+                        onClick={() => clearPayment.mutate(inv)}
+                      >
+                        <CheckCircle2 className="size-4" /> Payment cleared
+                      </Button>
+                    )}
+                    <Button size="sm" variant="outline" onClick={() => printInvoice(inv.id)}>
+                      <Printer className="size-4" /> Print
+                    </Button>
+                  </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
