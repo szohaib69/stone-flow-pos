@@ -83,3 +83,29 @@ export async function fetchInvoices() {
 
 export const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+export async function markInvoicePaid(invoice: Invoice) {
+  const balance = Math.max(0, Number(invoice.total) - Number(invoice.amount_paid));
+  if (balance <= 0) return;
+  const { error } = await supabase
+    .from("invoices")
+    .update({ amount_paid: Number(invoice.total) })
+    .eq("id", invoice.id);
+  if (error) throw error;
+
+  if (invoice.customer_id) {
+    const { data: customer } = await supabase
+      .from("customers")
+      .select("outstanding_balance")
+      .eq("id", invoice.customer_id)
+      .maybeSingle();
+    if (customer) {
+      await supabase
+        .from("customers")
+        .update({
+          outstanding_balance: Math.max(0, Number(customer.outstanding_balance) - balance),
+        })
+        .eq("id", invoice.customer_id);
+    }
+  }
+}
