@@ -21,12 +21,27 @@ function InvoicesPage() {
 
   const clearPayment = useMutation({
     mutationFn: (invoice: Invoice) => markInvoicePaid(invoice),
+    onMutate: async (invoice: Invoice) => {
+      await queryClient.cancelQueries({ queryKey: ["invoices"] });
+      const previous = queryClient.getQueryData<Invoice[]>(["invoices"]);
+      queryClient.setQueryData<Invoice[]>(["invoices"], (old) =>
+        (old ?? []).map((i) =>
+          i.id === invoice.id ? { ...i, amount_paid: Number(i.total) } : i,
+        ),
+      );
+      return { previous };
+    },
+    onError: (err: Error, _invoice, context) => {
+      if (context?.previous) queryClient.setQueryData(["invoices"], context.previous);
+      toast.error(err.message);
+    },
     onSuccess: () => {
       toast.success("Payment marked as cleared");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
       queryClient.invalidateQueries({ queryKey: ["customers"] });
     },
-    onError: (err: Error) => toast.error(err.message),
   });
 
   const printInvoice = (id: string) =>
