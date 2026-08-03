@@ -106,7 +106,7 @@ function InvoicesPage() {
                 <td
                   className={`px-4 py-3 text-right ${balance > 0 ? "text-destructive" : "text-muted-foreground"}`}
                 >
-                  {balance > 0 ? currency(balance) : "Cleared"}
+                  {currency(balance)}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">

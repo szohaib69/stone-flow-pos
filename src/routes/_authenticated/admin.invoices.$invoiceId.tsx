@@ -178,7 +178,7 @@ function InvoiceDetailPage() {
             </div>
             <div className="flex justify-between font-medium">
               <span>Balance due</span>
-              <span>{balance > 0 ? currency(balance) : "Cleared"}</span>
+              <span>{currency(balance)}</span>
             </div>
           </div>
 
