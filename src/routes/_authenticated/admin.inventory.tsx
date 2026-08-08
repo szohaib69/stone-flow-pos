@@ -260,6 +260,15 @@ function InventoryPage() {
                 <Label>Low stock alert at</Label>
                 <Input type="number" min="0" {...field("low_stock_threshold")} />
               </div>
+              {draft.category === "tiles" && (
+                <div className="space-y-2">
+                  <Label>Tiles per carton</Label>
+                  <Input type="number" min="1" {...field("pieces_per_carton")} />
+                  <p className="text-xs text-muted-foreground">
+                    Used at the counter to bill by carton (e.g. 8 tiles per carton).
+                  </p>
+                </div>
+              )}
               <div className="space-y-2 sm:col-span-2">
                 <Label>Description</Label>
                 <Textarea rows={3} {...field("description")} maxLength={600} />
