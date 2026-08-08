@@ -37,6 +37,7 @@ type Draft = {
   unit: string;
   price: string;
   stock_qty: string;
+  pieces_per_carton: string;
   low_stock_threshold: string;
 };
 
