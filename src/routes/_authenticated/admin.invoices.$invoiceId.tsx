@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { BUSINESS } from "@/components/site/SiteShell";
+import { useInvoiceRealtime } from "@/hooks/useInvoiceRealtime";
 import { supabase } from "@/integrations/supabase/client";
 import { currency } from "@/lib/catalog";
 import { formatDate, markInvoicePaid, type Invoice, type InvoiceItem } from "@/lib/pos";
@@ -20,6 +21,7 @@ function InvoiceDetailPage() {
   const { invoiceId } = Route.useParams();
   const { print } = Route.useSearch();
   const queryClient = useQueryClient();
+  useInvoiceRealtime(invoiceId);
 
   const { data, isLoading } = useQuery({
     queryKey: ["invoice", invoiceId],
