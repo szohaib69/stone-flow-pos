@@ -11,9 +11,8 @@ import { currency } from "@/lib/catalog";
 import { formatDate, markInvoicePaid, type Invoice, type InvoiceItem } from "@/lib/pos";
 
 export const Route = createFileRoute("/_authenticated/admin/invoices/$invoiceId")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    print: search['print'] === "1" || search['print'] === true ? true : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { print?: boolean } =>
+    search['print'] === "1" || search['print'] === true ? { print: true } : {},
   component: InvoiceDetailPage,
 });
 
