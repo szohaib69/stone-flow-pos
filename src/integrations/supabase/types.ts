@@ -191,6 +191,7 @@ export type Database = {
           is_published: boolean
           low_stock_threshold: number
           name: string
+          pieces_per_carton: number | null
           price: number
           size: string | null
           sku: string | null
@@ -210,6 +211,7 @@ export type Database = {
           is_published?: boolean
           low_stock_threshold?: number
           name: string
+          pieces_per_carton?: number | null
           price?: number
           size?: string | null
           sku?: string | null
@@ -229,6 +231,7 @@ export type Database = {
           is_published?: boolean
           low_stock_threshold?: number
           name?: string
+          pieces_per_carton?: number | null
           price?: number
           size?: string | null
           sku?: string | null

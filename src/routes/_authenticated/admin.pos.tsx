@@ -19,6 +19,9 @@ export const Route = createFileRoute("/_authenticated/admin/pos")({
 
 type Line = { product: Product; qty: number };
 
+const perCarton = (p: Product) =>
+  p.category === "tiles" && Number(p.pieces_per_carton) > 0 ? Number(p.pieces_per_carton) : 0;
+
 function PosPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -209,6 +212,9 @@ function PosPage() {
                 <p className="text-xs text-muted-foreground">
                   {[p.color, p.size, p.finish].filter(Boolean).join(" · ") || p.unit}
                 </p>
+                {perCarton(p) > 0 && (
+                  <p className="text-xs text-brass">{perCarton(p)} tiles / carton</p>
+                )}
                 <p className="mt-1 text-sm">
                   {currency(p.price)}{" "}
                   <span className="text-xs text-muted-foreground">
@@ -231,43 +237,80 @@ function PosPage() {
                 Tap a product to start the invoice.
               </p>
             )}
-            {lines.map((l) => (
-              <div key={l.product.id} className="flex items-center gap-3 py-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{l.product.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {currency(l.product.price)} / {l.product.unit}
-                  </p>
+            {lines.map((l) => {
+              const box = perCarton(l.product);
+              const setQty = (qty: number) =>
+                setLines((prev) =>
+                  prev.map((x) =>
+                    x.product.id === l.product.id ? { ...x, qty: Math.max(1, qty) } : x,
+                  ),
+                );
+              const cartons = box ? Math.floor(l.qty / box) : 0;
+              const loose = box ? l.qty % box : 0;
+              return (
+                <div key={l.product.id} className="py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{l.product.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {currency(l.product.price)} / {l.product.unit}
+                        {box ? ` · ${box} per carton` : ""}
+                      </p>
+                    </div>
+                    {!box && (
+                      <Input
+                        type="number"
+                        min="1"
+                        className="w-20"
+                        value={l.qty}
+                        onChange={(e) => setQty(Number(e.target.value) || 1)}
+                      />
+                    )}
+                    <span className="w-24 text-right text-sm">
+                      {currency(Number(l.product.price) * l.qty)}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setLines((prev) => prev.filter((x) => x.product.id !== l.product.id))
+                      }
+                      aria-label={`Remove ${l.product.name}`}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                  {box > 0 && (
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Cartons</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={cartons}
+                          onChange={(e) =>
+                            setQty(Math.max(0, Number(e.target.value) || 0) * box + loose)
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Extra tiles</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={loose}
+                          onChange={(e) =>
+                            setQty(cartons * box + Math.max(0, Number(e.target.value) || 0))
+                          }
+                        />
+                      </div>
+                      <p className="col-span-2 text-xs text-muted-foreground">
+                        {l.qty} {l.product.unit} total
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <Input
-                  type="number"
-                  min="1"
-                  className="w-20"
-                  value={l.qty}
-                  onChange={(e) =>
-                    setLines((prev) =>
-                      prev.map((x) =>
-                        x.product.id === l.product.id
-                          ? { ...x, qty: Math.max(1, Number(e.target.value) || 1) }
-                          : x,
-                      ),
-                    )
-                  }
-                />
-                <span className="w-24 text-right text-sm">
-                  {currency(Number(l.product.price) * l.qty)}
-                </span>
-                <button
-                  onClick={() =>
-                    setLines((prev) => prev.filter((x) => x.product.id !== l.product.id))
-                  }
-                  aria-label={`Remove ${l.product.name}`}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="mt-4 space-y-3 border-t border-border pt-4">
