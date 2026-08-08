@@ -87,11 +87,15 @@ export const formatDate = (iso: string) =>
 export async function markInvoicePaid(invoice: Invoice) {
   const balance = Math.max(0, Number(invoice.total) - Number(invoice.amount_paid));
   if (balance <= 0) return;
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("invoices")
     .update({ amount_paid: Number(invoice.total) })
-    .eq("id", invoice.id);
+    .eq("id", invoice.id)
+    .select("id");
   if (error) throw error;
+  if (!updated || updated.length === 0) {
+    throw new Error("You do not have permission to update this invoice.");
+  }
 
   if (invoice.customer_id) {
     const { data: customer } = await supabase
