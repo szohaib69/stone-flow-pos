@@ -52,6 +52,7 @@ const emptyDraft: Draft = {
   unit: "sq ft",
   price: "0",
   stock_qty: "0",
+  pieces_per_carton: "8",
   low_stock_threshold: "10",
 };
 
@@ -68,6 +69,7 @@ function toDraft(p: Product): Draft {
     unit: p.unit,
     price: String(p.price),
     stock_qty: String(p.stock_qty),
+    pieces_per_carton: p.pieces_per_carton ? String(p.pieces_per_carton) : "",
     low_stock_threshold: String(p.low_stock_threshold),
   };
 }
@@ -102,6 +104,10 @@ function InventoryPage() {
         unit: draft.unit.trim() || "unit",
         price: Number(draft.price) || 0,
         stock_qty: Number(draft.stock_qty) || 0,
+        pieces_per_carton:
+          draft.category === "tiles" && Number(draft.pieces_per_carton) > 0
+            ? Number(draft.pieces_per_carton)
+            : null,
         low_stock_threshold: Number(draft.low_stock_threshold) || 0,
       };
       if (!payload.name) throw new Error("Product name is required");
