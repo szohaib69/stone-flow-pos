@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
+import { useInvoiceRealtime } from "@/hooks/useInvoiceRealtime";
 import { currency } from "@/lib/catalog";
 import { fetchInvoices, formatDate, markInvoicePaid, type Invoice } from "@/lib/pos";
 
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/_authenticated/admin/invoices/")({
 
 function InvoicesPage() {
   const queryClient = useQueryClient();
+  useInvoiceRealtime();
   const { data: invoices = [], isLoading } = useQuery({
     queryKey: ["invoices"],
     queryFn: fetchInvoices,
