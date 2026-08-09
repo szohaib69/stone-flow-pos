@@ -352,13 +352,42 @@ function PosPage() {
                 ))}
               </select>
               {!customerId && (
-                <Input
-                  value={walkIn}
-                  onChange={(e) => setWalkIn(e.target.value)}
-                  placeholder="Customer name on invoice"
-                  maxLength={100}
-                />
+                <div className="space-y-2 rounded-md border border-border p-3">
+                  <Input
+                    value={walkIn}
+                    onChange={(e) => setWalkIn(e.target.value)}
+                    placeholder="Customer name on invoice"
+                    maxLength={100}
+                  />
+                  <Input
+                    value={walkInPhone}
+                    onChange={(e) => setWalkInPhone(e.target.value)}
+                    placeholder="Phone number (optional)"
+                    maxLength={30}
+                  />
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <input
+                      type="checkbox"
+                      className="size-4 accent-brass"
+                      checked={saveWalkIn}
+                      onChange={(e) => setSaveWalkIn(e.target.checked)}
+                    />
+                    Save this customer to Customers records
+                  </label>
+                </div>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Delivery / receiving date (optional)</Label>
+              <Input
+                type="date"
+                value={deliveryDate}
+                onChange={(e) => setDeliveryDate(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Use this for marble or tile orders that will be delivered later.
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
