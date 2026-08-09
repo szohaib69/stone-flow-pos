@@ -134,6 +134,14 @@ function InvoiceDetailPage() {
             <div className="sm:text-right">
               <p className="text-xs uppercase tracking-wider text-muted-foreground">Payment</p>
               <p className="mt-1 capitalize">{invoice.payment_method}</p>
+              {invoice.delivery_date && (
+                <>
+                  <p className="mt-3 text-xs uppercase tracking-wider text-muted-foreground">
+                    Delivery date
+                  </p>
+                  <p className="mt-1">{formatDate(invoice.delivery_date)}</p>
+                </>
+              )}
             </div>
           </div>
 
