@@ -36,6 +36,9 @@ function PosPage() {
   const [lines, setLines] = useState<Line[]>([]);
   const [customerId, setCustomerId] = useState("");
   const [walkIn, setWalkIn] = useState("Walk-in customer");
+  const [walkInPhone, setWalkInPhone] = useState("");
+  const [saveWalkIn, setSaveWalkIn] = useState(true);
+  const [deliveryDate, setDeliveryDate] = useState("");
   const [discount, setDiscount] = useState("0");
   const [amountPaid, setAmountPaid] = useState("0");
   const [method, setMethod] = useState<PaymentMethod>("cash");
@@ -94,19 +97,39 @@ function PosPage() {
   const checkout = useMutation({
     mutationFn: async () => {
       if (lines.length === 0) throw new Error("Add at least one product");
-      const customer = customers.find((c) => c.id === customerId);
+      let customer = customers.find((c) => c.id === customerId) ?? null;
       const { data: user } = await supabase.auth.getUser();
+
+      const walkInName = walkIn.trim();
+      if (!customer && saveWalkIn && walkInName && walkInName.toLowerCase() !== "walk-in customer") {
+        const existing = customers.find(
+          (c) => c.name.trim().toLowerCase() === walkInName.toLowerCase(),
+        );
+        if (existing) {
+          customer = existing;
+        } else {
+          const { data: created, error: customerError } = await supabase
+            .from("customers")
+            .insert({ name: walkInName, phone: walkInPhone.trim() || null })
+            .select()
+            .single();
+          if (customerError) throw customerError;
+          customer = created as unknown as typeof customer;
+        }
+      }
+
       const { data: invoice, error } = await supabase
         .from("invoices")
         .insert({
-          customer_id: customerId || null,
-          customer_name: customer?.name ?? walkIn.trim() ?? "Walk-in customer",
+          customer_id: customer?.id ?? null,
+          customer_name: customer?.name ?? walkInName ?? "Walk-in customer",
           subtotal,
           discount: Number(discount) || 0,
           total,
           amount_paid: Number(amountPaid) || 0,
           payment_method: method,
           notes: notes.trim() || null,
+          delivery_date: deliveryDate || null,
           created_by: user.user?.id ?? null,
         })
         .select()
