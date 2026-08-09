@@ -36,6 +36,9 @@ function PosPage() {
   const [lines, setLines] = useState<Line[]>([]);
   const [customerId, setCustomerId] = useState("");
   const [walkIn, setWalkIn] = useState("Walk-in customer");
+  const [walkInPhone, setWalkInPhone] = useState("");
+  const [saveWalkIn, setSaveWalkIn] = useState(true);
+  const [deliveryDate, setDeliveryDate] = useState("");
   const [discount, setDiscount] = useState("0");
   const [amountPaid, setAmountPaid] = useState("0");
   const [method, setMethod] = useState<PaymentMethod>("cash");
@@ -94,19 +97,39 @@ function PosPage() {
   const checkout = useMutation({
     mutationFn: async () => {
       if (lines.length === 0) throw new Error("Add at least one product");
-      const customer = customers.find((c) => c.id === customerId);
+      let customer = customers.find((c) => c.id === customerId) ?? null;
       const { data: user } = await supabase.auth.getUser();
+
+      const walkInName = walkIn.trim();
+      if (!customer && saveWalkIn && walkInName && walkInName.toLowerCase() !== "walk-in customer") {
+        const existing = customers.find(
+          (c) => c.name.trim().toLowerCase() === walkInName.toLowerCase(),
+        );
+        if (existing) {
+          customer = existing;
+        } else {
+          const { data: created, error: customerError } = await supabase
+            .from("customers")
+            .insert({ name: walkInName, phone: walkInPhone.trim() || null })
+            .select()
+            .single();
+          if (customerError) throw customerError;
+          customer = created as unknown as typeof customer;
+        }
+      }
+
       const { data: invoice, error } = await supabase
         .from("invoices")
         .insert({
-          customer_id: customerId || null,
-          customer_name: customer?.name ?? walkIn.trim() ?? "Walk-in customer",
+          customer_id: customer?.id ?? null,
+          customer_name: customer?.name ?? walkInName ?? "Walk-in customer",
           subtotal,
           discount: Number(discount) || 0,
           total,
           amount_paid: Number(amountPaid) || 0,
           payment_method: method,
           notes: notes.trim() || null,
+          delivery_date: deliveryDate || null,
           created_by: user.user?.id ?? null,
         })
         .select()
@@ -329,13 +352,42 @@ function PosPage() {
                 ))}
               </select>
               {!customerId && (
-                <Input
-                  value={walkIn}
-                  onChange={(e) => setWalkIn(e.target.value)}
-                  placeholder="Customer name on invoice"
-                  maxLength={100}
-                />
+                <div className="space-y-2 rounded-md border border-border p-3">
+                  <Input
+                    value={walkIn}
+                    onChange={(e) => setWalkIn(e.target.value)}
+                    placeholder="Customer name on invoice"
+                    maxLength={100}
+                  />
+                  <Input
+                    value={walkInPhone}
+                    onChange={(e) => setWalkInPhone(e.target.value)}
+                    placeholder="Phone number (optional)"
+                    maxLength={30}
+                  />
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <input
+                      type="checkbox"
+                      className="size-4 accent-brass"
+                      checked={saveWalkIn}
+                      onChange={(e) => setSaveWalkIn(e.target.checked)}
+                    />
+                    Save this customer to Customers records
+                  </label>
+                </div>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Delivery / receiving date (optional)</Label>
+              <Input
+                type="date"
+                value={deliveryDate}
+                onChange={(e) => setDeliveryDate(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Use this for marble or tile orders that will be delivered later.
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">

@@ -26,6 +26,7 @@ export type Invoice = {
   amount_paid: number;
   payment_method: PaymentMethod;
   notes: string | null;
+  delivery_date: string | null;
   created_at: string;
 };
 

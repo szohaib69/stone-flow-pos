@@ -132,6 +132,7 @@ export type Database = {
           created_by: string | null
           customer_id: string | null
           customer_name: string
+          delivery_date: string | null
           discount: number
           id: string
           invoice_no: string
@@ -146,6 +147,7 @@ export type Database = {
           created_by?: string | null
           customer_id?: string | null
           customer_name?: string
+          delivery_date?: string | null
           discount?: number
           id?: string
           invoice_no?: string
@@ -160,6 +162,7 @@ export type Database = {
           created_by?: string | null
           customer_id?: string | null
           customer_name?: string
+          delivery_date?: string | null
           discount?: number
           id?: string
           invoice_no?: string
