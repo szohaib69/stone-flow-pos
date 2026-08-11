@@ -8,6 +8,7 @@ import {
   ReceiptText,
   LogOut,
   Store,
+  BarChart3,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -21,6 +22,7 @@ const NAV = [
   { to: "/admin/inventory", label: "Inventory", icon: Boxes },
   { to: "/admin/customers", label: "Customers", icon: Users },
   { to: "/admin/invoices", label: "Invoices", icon: ReceiptText },
+  { to: "/admin/reports", label: "Reports", icon: BarChart3 },
 ];
 
 export function AdminShell({
