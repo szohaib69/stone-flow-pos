@@ -48,7 +48,7 @@ export function AdminShell({
 
   return (
     <div className="min-h-screen bg-muted/40 lg:flex">
-      <aside className="border-b border-border bg-card lg:min-h-screen lg:w-60 lg:border-b-0 lg:border-r">
+      <aside className="border-b border-border bg-card print:hidden lg:min-h-screen lg:w-60 lg:border-b-0 lg:border-r">
         <div className="flex items-center gap-2 px-5 py-5">
           <Store className="size-5 text-brass" />
           <span className="font-display text-lg leading-none">City Tiles POS</span>
@@ -74,7 +74,7 @@ export function AdminShell({
       </aside>
 
       <div className="flex-1">
-        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4">
+        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 print:hidden">
           <h1 className="text-xl font-semibold">{title}</h1>
           <div className="flex items-center gap-2">
             {actions}
@@ -83,7 +83,7 @@ export function AdminShell({
             </Button>
           </div>
         </header>
-        <main className="p-5">{children}</main>
+        <main className="p-5 print:p-0">{children}</main>
       </div>
     </div>
   );
