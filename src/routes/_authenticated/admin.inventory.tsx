@@ -1,11 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
-import { Camera, ScanLine } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
-import { CameraScanner } from "@/components/admin/BarcodeScanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +26,6 @@ export const Route = createFileRoute("/_authenticated/admin/inventory")({
 type Draft = {
   name: string;
   sku: string;
-  barcode: string;
   category: Category;
   description: string;
   color: string;
@@ -44,7 +41,6 @@ type Draft = {
 const emptyDraft: Draft = {
   name: "",
   sku: "",
-  barcode: "",
   category: "marble",
   description: "",
   color: "",
@@ -61,7 +57,6 @@ function toDraft(p: Product): Draft {
   return {
     name: p.name,
     sku: p.sku ?? "",
-    barcode: p.barcode ?? "",
     category: p.category,
     description: p.description ?? "",
     color: p.color ?? "",
@@ -88,15 +83,12 @@ function InventoryPage() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [filter, setFilter] = useState<Category | "all">("all");
-  const [cameraOn, setCameraOn] = useState(false);
-  const barcodeRef = useRef<HTMLInputElement>(null);
 
   const save = useMutation({
     mutationFn: async () => {
       const payload = {
         name: draft.name.trim(),
         sku: draft.sku.trim() || null,
-        barcode: draft.barcode.trim() || null,
         category: draft.category,
         description: draft.description.trim(),
         color: draft.color.trim() || null,
@@ -178,59 +170,8 @@ function InventoryPage() {
                 </select>
               </div>
               <div className="space-y-2">
-                <Label>Reference / SKU</Label>
-                <Input {...field("sku")} maxLength={40} />
-              </div>
-              <div className="space-y-2">
-                <Label>Barcode</Label>
-                <div className="relative">
-                  <ScanLine className="pointer-events-none absolute left-3 top-2.5 size-4 text-brass" />
-                  <Input
-                    ref={barcodeRef}
-                    className="pl-9"
-                    {...field("barcode")}
-                    maxLength={64}
-                    placeholder="Scan or type barcode"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        barcodeRef.current?.blur();
-                      }
-                    }}
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setDraft((d) => ({ ...d, barcode: "" }));
-                      barcodeRef.current?.focus();
-                      toast.info("Ready — scan the barcode now");
-                    }}
-                  >
-                    <ScanLine className="size-4" /> Scan with reader
-                  </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setCameraOn((v) => !v)}
-                  >
-                    <Camera className="size-4" /> {cameraOn ? "Close camera" : "Camera"}
-                  </Button>
-                </div>
-                {cameraOn && (
-                  <CameraScanner
-                    onDetected={(code) => {
-                      setDraft((d) => ({ ...d, barcode: code }));
-                      setCameraOn(false);
-                      toast.success(`Barcode captured: ${code}`);
-                    }}
-                    onClose={() => setCameraOn(false)}
-                  />
-                )}
+                <Label>Stock code (e.g. 100B)</Label>
+                <Input {...field("sku")} maxLength={40} placeholder="100B" />
               </div>
               <div className="space-y-2">
                 <Label>Colour</Label>
