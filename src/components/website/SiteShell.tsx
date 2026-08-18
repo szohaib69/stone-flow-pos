@@ -79,7 +79,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
           <div className="hidden md:block">
             <Button asChild variant="brass" size="lg">
-              <Link to="/trade">Request a Quote</Link>
+              <Link to="/website/trade">Request a Quote</Link>
             </Button>
           </div>
           <button
@@ -103,7 +103,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
             ))}
             <Button asChild variant="brass" className="mt-3 w-full">
-              <Link to="/trade" onClick={() => setOpen(false)}>
+              <Link to="/website/trade" onClick={() => setOpen(false)}>
                 Request a Quote
               </Link>
             </Button>

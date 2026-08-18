@@ -2,12 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ShieldCheck, Truck, Hammer, Ruler } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { SiteShell, BUSINESS } from "@/components/site/SiteShell";
+import { SiteShell, BUSINESS } from "@/components/website/SiteShell";
 import { CATEGORIES } from "@/lib/catalog";
 const heroImg = "/images/hero-marble.jpg";
 const factoryImg = "/images/factory.jpg";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/website/")({
   head: () => ({
     meta: [
       { title: "City Tiles — Marble, Tiles, Chips & Sanitary" },
@@ -58,10 +58,10 @@ function Index() {
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Button asChild variant="brass" size="xl">
-                <Link to="/catalog">Browse the Catalog</Link>
+                <Link to="/website/catalog">Browse the Catalog</Link>
               </Button>
               <Button asChild variant="onDark" size="xl">
-                <Link to="/trade">Bulk Pricing</Link>
+                <Link to="/website/trade">Bulk Pricing</Link>
               </Button>
             </div>
           </div>
@@ -88,7 +88,7 @@ function Index() {
             <p className="eyebrow text-brass">What we supply</p>
             <h2 className="mt-3 text-4xl md:text-5xl">Four material families</h2>
           </div>
-          <Link to="/catalog" className="eyebrow text-foreground/70 hover:text-brass">
+          <Link to="/website/catalog" className="eyebrow text-foreground/70 hover:text-brass">
             View full catalog →
           </Link>
         </div>
@@ -96,7 +96,7 @@ function Index() {
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.key}
-              to="/catalog"
+              to="/website/catalog"
               search={{ category: cat.key }}
               className="group relative isolate overflow-hidden border border-border"
             >
@@ -151,7 +151,7 @@ function Index() {
               ))}
             </dl>
             <Button asChild variant="stone" size="xl" className="mt-10">
-              <Link to="/about">Our process</Link>
+              <Link to="/website/about">Our process</Link>
             </Button>
           </div>
         </div>
@@ -165,7 +165,7 @@ function Index() {
           </h2>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button asChild variant="brass" size="xl">
-              <Link to="/trade">Request bulk pricing</Link>
+              <Link to="/website/trade">Request bulk pricing</Link>
             </Button>
             <Button asChild variant="onDark" size="xl">
               <a href={BUSINESS.whatsapp} target="_blank" rel="noreferrer">

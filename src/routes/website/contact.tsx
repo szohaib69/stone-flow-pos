@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
 
-import { SiteShell, PageHeader, BUSINESS } from "@/components/site/SiteShell";
-import { InquiryForm } from "@/components/site/InquiryForm";
+import { SiteShell, PageHeader, BUSINESS } from "@/components/website/SiteShell";
+import { InquiryForm } from "@/components/website/InquiryForm";
 
-export const Route = createFileRoute("/contact")({
+export const Route = createFileRoute("/website/contact")({
   head: () => ({
     meta: [
       { title: "Contact & Yard Location — City Tiles" },

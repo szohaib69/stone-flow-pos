@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { SiteShell, PageHeader, BUSINESS } from "@/components/site/SiteShell";
-import { InquiryForm } from "@/components/site/InquiryForm";
+import { SiteShell, PageHeader, BUSINESS } from "@/components/website/SiteShell";
+import { InquiryForm } from "@/components/website/InquiryForm";
 
-export const Route = createFileRoute("/trade")({
+export const Route = createFileRoute("/website/trade")({
   head: () => ({
     meta: [
       { title: "Bulk & Trade Pricing — City Tiles" },
