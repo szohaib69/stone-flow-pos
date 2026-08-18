@@ -62,7 +62,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <Link
                 key={item.to}
                 to={item.to}
-                activeOptions={{ exact: item.to === "/" }}
+                activeOptions={{ exact: item.to === "/website" }}
                 activeProps={{ className: "text-foreground" }}
                 inactiveProps={{ className: "text-muted-foreground" }}
                 className="text-sm tracking-wide transition-colors hover:text-foreground"
