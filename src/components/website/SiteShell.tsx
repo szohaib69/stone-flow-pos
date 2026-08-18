@@ -1,3 +1,4 @@
+// WEBSITE — TABLED FOR LATER. Public marketing site, not part of the active POS workflow.
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, X, Phone, MessageCircle, MapPin, Mail } from "lucide-react";
@@ -16,16 +17,16 @@ export const BUSINESS = {
 };
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/catalog", label: "Catalog" },
-  { to: "/about", label: "About" },
-  { to: "/trade", label: "Bulk & Trade" },
-  { to: "/contact", label: "Contact" },
+  { to: "/website", label: "Home" },
+  { to: "/website/catalog", label: "Catalog" },
+  { to: "/website/about", label: "About" },
+  { to: "/website/trade", label: "Bulk & Trade" },
+  { to: "/website/contact", label: "Contact" },
 ] as const;
 
 function Wordmark({ tone = "dark" }: { tone?: "dark" | "light" }) {
   return (
-    <Link to="/" className="flex items-baseline gap-2">
+    <Link to="/website" className="flex items-baseline gap-2">
       <span
         className={`font-display text-2xl leading-none ${tone === "light" ? "text-ivory" : "text-foreground"}`}
       >
@@ -133,7 +134,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 </li>
               ))}
               <li>
-                <Link to="/auth" className="hover:text-ivory">
+                <Link to="/" className="hover:text-ivory">
                   Staff Login
                 </Link>
               </li>
