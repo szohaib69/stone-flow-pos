@@ -4,17 +4,10 @@ import { useState, type ReactNode } from "react";
 import { Menu, X, Phone, MessageCircle, MapPin, Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { BUSINESS } from "@/lib/business";
 
-export const BUSINESS = {
-  name: "City Tiles",
-  short: "City Tiles",
-  phone: "0334 5333447",
-  phoneHref: "tel:+923345333447",
-  whatsapp: "https://wa.me/923345333447",
-  email: "sales@citytiles.com.pk",
-  address: "Mansehra Road, Abbottabad, Khyber Pakhtunkhwa",
-  hours: "Mon – Sat · 8:00 am – 7:00 pm",
-};
+export { BUSINESS };
+
 
 const NAV = [
   { to: "/website", label: "Home" },

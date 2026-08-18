@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
-import { BUSINESS } from "@/components/website/SiteShell";
+import { BUSINESS } from "@/lib/business";
 import { useInvoiceRealtime } from "@/hooks/useInvoiceRealtime";
 import { supabase } from "@/integrations/supabase/client";
 import { currency } from "@/lib/catalog";
