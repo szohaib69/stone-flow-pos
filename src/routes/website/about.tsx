@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { SiteShell, PageHeader } from "@/components/site/SiteShell";
+import { SiteShell, PageHeader } from "@/components/website/SiteShell";
 import { Button } from "@/components/ui/button";
 const factoryImg = "/images/factory.jpg";
 const marbleImg = "/images/cat-marble.jpg";
 
-export const Route = createFileRoute("/about")({
+export const Route = createFileRoute("/website/about")({
   head: () => ({
     meta: [
       { title: "About the Factory — City Tiles" },
@@ -115,7 +115,7 @@ function AboutPage() {
             </li>
           </ul>
           <Button asChild variant="brass" size="xl" className="mt-10">
-            <Link to="/contact">Visit the yard</Link>
+            <Link to="/website/contact">Visit the yard</Link>
           </Button>
         </div>
         <img

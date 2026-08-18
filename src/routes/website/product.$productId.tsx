@@ -1,14 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { SiteShell } from "@/components/site/SiteShell";
-import { ProductCard } from "@/components/site/ProductCard";
-import { InquiryForm } from "@/components/site/InquiryForm";
+import { SiteShell } from "@/components/website/SiteShell";
+import { ProductCard } from "@/components/website/ProductCard";
+import { InquiryForm } from "@/components/website/InquiryForm";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { categoryMeta, currency, fetchProduct, fetchProducts, productImage } from "@/lib/catalog";
 
-export const Route = createFileRoute("/product/$productId")({
+export const Route = createFileRoute("/website/product/$productId")({
   head: () => ({
     meta: [
       { title: "Product Details — City Tiles" },
@@ -55,7 +55,7 @@ function ProductPage() {
             This item may have been removed from the catalog.
           </p>
           <Button asChild variant="brass" size="xl" className="mt-8">
-            <Link to="/catalog">Back to catalog</Link>
+            <Link to="/website/catalog">Back to catalog</Link>
           </Button>
         </div>
       </SiteShell>
@@ -79,7 +79,7 @@ function ProductPage() {
   return (
     <SiteShell>
       <div className="mx-auto max-w-7xl px-5 py-10">
-        <Link to="/catalog" className="eyebrow text-muted-foreground hover:text-brass">
+        <Link to="/website/catalog" className="eyebrow text-muted-foreground hover:text-brass">
           ← Back to catalog
         </Link>
       </div>

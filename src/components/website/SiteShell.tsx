@@ -1,31 +1,25 @@
+// WEBSITE — TABLED FOR LATER. Public marketing site, not part of the active POS workflow.
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, X, Phone, MessageCircle, MapPin, Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { BUSINESS } from "@/lib/business";
 
-export const BUSINESS = {
-  name: "City Tiles",
-  short: "City Tiles",
-  phone: "0334 5333447",
-  phoneHref: "tel:+923345333447",
-  whatsapp: "https://wa.me/923345333447",
-  email: "sales@citytiles.com.pk",
-  address: "Mansehra Road, Abbottabad, Khyber Pakhtunkhwa",
-  hours: "Mon – Sat · 8:00 am – 7:00 pm",
-};
+export { BUSINESS };
+
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/catalog", label: "Catalog" },
-  { to: "/about", label: "About" },
-  { to: "/trade", label: "Bulk & Trade" },
-  { to: "/contact", label: "Contact" },
+  { to: "/website", label: "Home" },
+  { to: "/website/catalog", label: "Catalog" },
+  { to: "/website/about", label: "About" },
+  { to: "/website/trade", label: "Bulk & Trade" },
+  { to: "/website/contact", label: "Contact" },
 ] as const;
 
 function Wordmark({ tone = "dark" }: { tone?: "dark" | "light" }) {
   return (
-    <Link to="/" className="flex items-baseline gap-2">
+    <Link to="/website" className="flex items-baseline gap-2">
       <span
         className={`font-display text-2xl leading-none ${tone === "light" ? "text-ivory" : "text-foreground"}`}
       >
@@ -68,7 +62,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <Link
                 key={item.to}
                 to={item.to}
-                activeOptions={{ exact: item.to === "/" }}
+                activeOptions={{ exact: item.to === "/website" }}
                 activeProps={{ className: "text-foreground" }}
                 inactiveProps={{ className: "text-muted-foreground" }}
                 className="text-sm tracking-wide transition-colors hover:text-foreground"
@@ -79,7 +73,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
           <div className="hidden md:block">
             <Button asChild variant="brass" size="lg">
-              <Link to="/trade">Request a Quote</Link>
+              <Link to="/website/trade">Request a Quote</Link>
             </Button>
           </div>
           <button
@@ -103,7 +97,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
             ))}
             <Button asChild variant="brass" className="mt-3 w-full">
-              <Link to="/trade" onClick={() => setOpen(false)}>
+              <Link to="/website/trade" onClick={() => setOpen(false)}>
                 Request a Quote
               </Link>
             </Button>
@@ -133,7 +127,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 </li>
               ))}
               <li>
-                <Link to="/auth" className="hover:text-ivory">
+                <Link to="/" className="hover:text-ivory">
                   Staff Login
                 </Link>
               </li>

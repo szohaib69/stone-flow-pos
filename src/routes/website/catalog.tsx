@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { SiteShell, PageHeader } from "@/components/site/SiteShell";
-import { ProductCard } from "@/components/site/ProductCard";
+import { SiteShell, PageHeader } from "@/components/website/SiteShell";
+import { ProductCard } from "@/components/website/ProductCard";
 import { CATEGORIES, fetchProducts, type Category } from "@/lib/catalog";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -11,7 +11,7 @@ type CatalogSearch = { category?: Category; color?: string; finish?: string };
 
 const CATEGORY_KEYS = CATEGORIES.map((c) => c.key);
 
-export const Route = createFileRoute("/catalog")({
+export const Route = createFileRoute("/website/catalog")({
   validateSearch: (search: Record<string, unknown>): CatalogSearch => ({
     category: CATEGORY_KEYS.includes(search.category as Category)
       ? (search.category as Category)

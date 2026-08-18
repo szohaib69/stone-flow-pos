@@ -5,7 +5,7 @@ import { categoryMeta, currency, productImage, type Product } from "@/lib/catalo
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
-      to="/product/$productId"
+      to="/website/product/$productId"
       params={{ productId: product.id }}
       className="group flex flex-col overflow-hidden border border-border bg-card transition-shadow hover:shadow-lift"
     >

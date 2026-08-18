@@ -11,17 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as CatalogRouteImport } from './routes/catalog'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as TradeRouteImport } from './routes/trade'
-import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
+import { Route as WebsiteIndexRouteImport } from './routes/website/index'
+import { Route as WebsiteAboutRouteImport } from './routes/website/about'
+import { Route as WebsiteCatalogRouteImport } from './routes/website/catalog'
+import { Route as WebsiteContactRouteImport } from './routes/website/contact'
+import { Route as WebsiteTradeRouteImport } from './routes/website/trade'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin.customers'
 import { Route as AuthenticatedAdminInventoryRouteImport } from './routes/_authenticated/admin.inventory'
 import { Route as AuthenticatedAdminPosRouteImport } from './routes/_authenticated/admin.pos'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
+import { Route as WebsiteProductProductIdRouteImport } from './routes/website/product.$productId'
 import { Route as AuthenticatedAdminInvoicesIndexRouteImport } from './routes/_authenticated/admin.invoices.index'
 import { Route as AuthenticatedAdminInvoicesInvoiceIdRouteImport } from './routes/_authenticated/admin.invoices.$invoiceId'
 
@@ -34,34 +35,34 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CatalogRoute = CatalogRouteImport.update({
-  id: '/catalog',
-  path: '/catalog',
+const WebsiteIndexRoute = WebsiteIndexRouteImport.update({
+  id: '/website/',
+  path: '/website/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const WebsiteAboutRoute = WebsiteAboutRouteImport.update({
+  id: '/website/about',
+  path: '/website/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TradeRoute = TradeRouteImport.update({
-  id: '/trade',
-  path: '/trade',
+const WebsiteCatalogRoute = WebsiteCatalogRouteImport.update({
+  id: '/website/catalog',
+  path: '/website/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProductProductIdRoute = ProductProductIdRouteImport.update({
-  id: '/product/$productId',
-  path: '/product/$productId',
+const WebsiteContactRoute = WebsiteContactRouteImport.update({
+  id: '/website/contact',
+  path: '/website/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteTradeRoute = WebsiteTradeRouteImport.update({
+  id: '/website/trade',
+  path: '/website/trade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -92,6 +93,11 @@ const AuthenticatedAdminReportsRoute =
     path: '/admin/reports',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const WebsiteProductProductIdRoute = WebsiteProductProductIdRouteImport.update({
+  id: '/website/product/$productId',
+  path: '/website/product/$productId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminInvoicesIndexRoute =
   AuthenticatedAdminInvoicesIndexRouteImport.update({
     id: '/admin/invoices/',
@@ -107,32 +113,34 @@ const AuthenticatedAdminInvoicesInvoiceIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
-  '/catalog': typeof CatalogRoute
-  '/contact': typeof ContactRoute
-  '/trade': typeof TradeRoute
-  '/product/$productId': typeof ProductProductIdRoute
+  '/website/about': typeof WebsiteAboutRoute
+  '/website/catalog': typeof WebsiteCatalogRoute
+  '/website/contact': typeof WebsiteContactRoute
+  '/website/trade': typeof WebsiteTradeRoute
+  '/website/': typeof WebsiteIndexRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/inventory': typeof AuthenticatedAdminInventoryRoute
   '/admin/pos': typeof AuthenticatedAdminPosRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/website/product/$productId': typeof WebsiteProductProductIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/invoices/$invoiceId': typeof AuthenticatedAdminInvoicesInvoiceIdRoute
   '/admin/invoices/': typeof AuthenticatedAdminInvoicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
-  '/catalog': typeof CatalogRoute
-  '/contact': typeof ContactRoute
-  '/trade': typeof TradeRoute
-  '/product/$productId': typeof ProductProductIdRoute
+  '/website/about': typeof WebsiteAboutRoute
+  '/website/catalog': typeof WebsiteCatalogRoute
+  '/website/contact': typeof WebsiteContactRoute
+  '/website/trade': typeof WebsiteTradeRoute
+  '/website': typeof WebsiteIndexRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/inventory': typeof AuthenticatedAdminInventoryRoute
   '/admin/pos': typeof AuthenticatedAdminPosRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/website/product/$productId': typeof WebsiteProductProductIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/invoices/$invoiceId': typeof AuthenticatedAdminInvoicesInvoiceIdRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesIndexRoute
@@ -141,16 +149,17 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
-  '/catalog': typeof CatalogRoute
-  '/contact': typeof ContactRoute
-  '/trade': typeof TradeRoute
-  '/product/$productId': typeof ProductProductIdRoute
+  '/website/about': typeof WebsiteAboutRoute
+  '/website/catalog': typeof WebsiteCatalogRoute
+  '/website/contact': typeof WebsiteContactRoute
+  '/website/trade': typeof WebsiteTradeRoute
+  '/website/': typeof WebsiteIndexRoute
   '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/_authenticated/admin/inventory': typeof AuthenticatedAdminInventoryRoute
   '/_authenticated/admin/pos': typeof AuthenticatedAdminPosRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/website/product/$productId': typeof WebsiteProductProductIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/invoices/$invoiceId': typeof AuthenticatedAdminInvoicesInvoiceIdRoute
   '/_authenticated/admin/invoices/': typeof AuthenticatedAdminInvoicesIndexRoute
@@ -159,32 +168,34 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
     | '/auth'
-    | '/catalog'
-    | '/contact'
-    | '/trade'
-    | '/product/$productId'
+    | '/website/about'
+    | '/website/catalog'
+    | '/website/contact'
+    | '/website/trade'
+    | '/website/'
     | '/admin/customers'
     | '/admin/inventory'
     | '/admin/pos'
     | '/admin/reports'
+    | '/website/product/$productId'
     | '/admin/'
     | '/admin/invoices/$invoiceId'
     | '/admin/invoices/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
     | '/auth'
-    | '/catalog'
-    | '/contact'
-    | '/trade'
-    | '/product/$productId'
+    | '/website/about'
+    | '/website/catalog'
+    | '/website/contact'
+    | '/website/trade'
+    | '/website'
     | '/admin/customers'
     | '/admin/inventory'
     | '/admin/pos'
     | '/admin/reports'
+    | '/website/product/$productId'
     | '/admin'
     | '/admin/invoices/$invoiceId'
     | '/admin/invoices'
@@ -192,16 +203,17 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/about'
     | '/auth'
-    | '/catalog'
-    | '/contact'
-    | '/trade'
-    | '/product/$productId'
+    | '/website/about'
+    | '/website/catalog'
+    | '/website/contact'
+    | '/website/trade'
+    | '/website/'
     | '/_authenticated/admin/customers'
     | '/_authenticated/admin/inventory'
     | '/_authenticated/admin/pos'
     | '/_authenticated/admin/reports'
+    | '/website/product/$productId'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/invoices/$invoiceId'
     | '/_authenticated/admin/invoices/'
@@ -210,12 +222,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
-  CatalogRoute: typeof CatalogRoute
-  ContactRoute: typeof ContactRoute
-  TradeRoute: typeof TradeRoute
-  ProductProductIdRoute: typeof ProductProductIdRoute
+  WebsiteAboutRoute: typeof WebsiteAboutRoute
+  WebsiteCatalogRoute: typeof WebsiteCatalogRoute
+  WebsiteContactRoute: typeof WebsiteContactRoute
+  WebsiteTradeRoute: typeof WebsiteTradeRoute
+  WebsiteIndexRoute: typeof WebsiteIndexRoute
+  WebsiteProductProductIdRoute: typeof WebsiteProductProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -234,13 +247,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -248,32 +254,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/catalog': {
-      id: '/catalog'
-      path: '/catalog'
-      fullPath: '/catalog'
-      preLoaderRoute: typeof CatalogRouteImport
+    '/website/': {
+      id: '/website/'
+      path: '/website'
+      fullPath: '/website/'
+      preLoaderRoute: typeof WebsiteIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/website/about': {
+      id: '/website/about'
+      path: '/website/about'
+      fullPath: '/website/about'
+      preLoaderRoute: typeof WebsiteAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/trade': {
-      id: '/trade'
-      path: '/trade'
-      fullPath: '/trade'
-      preLoaderRoute: typeof TradeRouteImport
+    '/website/catalog': {
+      id: '/website/catalog'
+      path: '/website/catalog'
+      fullPath: '/website/catalog'
+      preLoaderRoute: typeof WebsiteCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/product/$productId': {
-      id: '/product/$productId'
-      path: '/product/$productId'
-      fullPath: '/product/$productId'
-      preLoaderRoute: typeof ProductProductIdRouteImport
+    '/website/contact': {
+      id: '/website/contact'
+      path: '/website/contact'
+      fullPath: '/website/contact'
+      preLoaderRoute: typeof WebsiteContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website/trade': {
+      id: '/website/trade'
+      path: '/website/trade'
+      fullPath: '/website/trade'
+      preLoaderRoute: typeof WebsiteTradeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -310,6 +323,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/website/product/$productId': {
+      id: '/website/product/$productId'
+      path: '/website/product/$productId'
+      fullPath: '/website/product/$productId'
+      preLoaderRoute: typeof WebsiteProductProductIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/invoices/': {
       id: '/_authenticated/admin/invoices/'
@@ -355,12 +375,13 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
-  CatalogRoute: CatalogRoute,
-  ContactRoute: ContactRoute,
-  TradeRoute: TradeRoute,
-  ProductProductIdRoute: ProductProductIdRoute,
+  WebsiteAboutRoute: WebsiteAboutRoute,
+  WebsiteCatalogRoute: WebsiteCatalogRoute,
+  WebsiteContactRoute: WebsiteContactRoute,
+  WebsiteTradeRoute: WebsiteTradeRoute,
+  WebsiteIndexRoute: WebsiteIndexRoute,
+  WebsiteProductProductIdRoute: WebsiteProductProductIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
