@@ -69,8 +69,7 @@ function AuthPage() {
           toast.success("Check your email to confirm your account.");
           return;
         }
-        if (isAdminSetup) navigate({ to: "/admin", replace: true });
-        else navigate({ to: "/admin", replace: true });
+        navigate({ to: "/admin", replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
