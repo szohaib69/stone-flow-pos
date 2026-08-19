@@ -60,10 +60,24 @@ function PosPage() {
   function addLine(product: Product) {
     setLines((prev) => {
       const found = prev.find((l) => l.product.id === product.id);
-      if (found) return prev.map((l) => (l.product.id === product.id ? { ...l, qty: l.qty + 1 } : l));
-      return [...prev, { product, qty: 1 }];
+      const box = perCarton(product);
+      if (found)
+        return prev.map((l) =>
+          l.product.id === product.id ? { ...l, qty: l.qty + (box || 1) } : l,
+        );
+      return [...prev, { product, qty: box || 1 }];
     });
   }
+
+  const codeMatches = useMemo(() => {
+    const q = scan.trim().toLowerCase();
+    if (!q) return [];
+    return products
+      .filter((p) =>
+        [p.sku, p.name].filter(Boolean).some((v) => String(v).toLowerCase().includes(q)),
+      )
+      .slice(0, 6);
+  }, [products, scan]);
 
   const handleScan = useCallback(
     (raw: string) => {
@@ -190,11 +204,46 @@ function PosPage() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      handleScan(scan);
+                      const first = codeMatches[0];
+                      const exact = products.find(
+                        (p) => (p.sku ?? "").toLowerCase() === scan.trim().toLowerCase(),
+                      );
+                      if (!exact && first) {
+                        addLine(first);
+                        toast.success(`${first.sku ?? first.name} added`);
+                      } else {
+                        handleScan(scan);
+                      }
                       setScan("");
                     }
                   }}
                 />
+                {codeMatches.length > 0 && (
+                  <ul className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-md border border-border bg-card shadow-lg">
+                    {codeMatches.map((p) => (
+                      <li key={p.id}>
+                        <button
+                          type="button"
+                          className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-accent"
+                          onClick={() => {
+                            addLine(p);
+                            toast.success(`${p.sku ?? p.name} added`);
+                            setScan("");
+                            scanRef.current?.focus();
+                          }}
+                        >
+                          <span>
+                            <span className="font-medium text-brass">{p.sku ?? "—"}</span>{" "}
+                            <span className="text-muted-foreground">{p.name}</span>
+                          </span>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {currency(p.price)} · {p.stock_qty} left
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <Button
                 variant="stone"
@@ -264,7 +313,9 @@ function PosPage() {
               const setQty = (qty: number) =>
                 setLines((prev) =>
                   prev.map((x) =>
-                    x.product.id === l.product.id ? { ...x, qty: Math.max(1, qty) } : x,
+                    x.product.id === l.product.id
+                      ? { ...x, qty: Math.max(box ? 0 : 1, qty) }
+                      : x,
                   ),
                 );
               const cartons = box ? Math.floor(l.qty / box) : 0;
