@@ -4,13 +4,18 @@ import { Download, CalendarRange } from "lucide-react";
 import * as XLSX from "xlsx";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminOnly } from "@/components/admin/AdminOnly";
 import { Button } from "@/components/ui/button";
 import { currency } from "@/lib/catalog";
 import { fetchInvoices, formatDate, type Invoice } from "@/lib/pos";
 import { useInvoiceRealtime } from "@/hooks/useInvoiceRealtime";
 
 export const Route = createFileRoute("/_authenticated/admin/reports")({
-  component: ReportsPage,
+  component: () => (
+    <AdminOnly title="Sales Reports">
+      <ReportsPage />
+    </AdminOnly>
+  ),
   head: () => ({
     meta: [
       { title: "Sales Reports | City Tiles POS" },
