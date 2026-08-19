@@ -3,6 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Role = "admin" | "cashier";
+export type AccountStatus = "pending" | "approved" | "rejected" | "suspended";
+
+export type StaffProfile = {
+  id: string;
+  full_name: string;
+  email: string | null;
+  phone: string | null;
+  employee_id: string | null;
+  status: AccountStatus;
+  created_at: string;
+  approved_at: string | null;
+  rejected_at: string | null;
+};
 export type PaymentMethod = "cash" | "bank" | "credit";
 
 export type Customer = {
@@ -65,6 +78,45 @@ export function useRoles() {
       return (data ?? []).map((r) => r.role as Role);
     },
   });
+}
+
+export function useMyProfile() {
+  const { data: user } = useSession();
+  return useQuery({
+    queryKey: ["my-profile", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user!.id)
+        .maybeSingle();
+      if (error) throw error;
+      return (data ?? null) as unknown as StaffProfile | null;
+    },
+  });
+}
+
+export function useIsAdmin() {
+  const { data: roles } = useRoles();
+  return (roles ?? []).includes("admin");
+}
+
+export async function fetchStaff() {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as StaffProfile[];
+}
+
+export async function setAccountStatus(userId: string, status: AccountStatus) {
+  const { error } = await supabase.rpc("set_account_status", {
+    _user_id: userId,
+    _status: status,
+  });
+  if (error) throw error;
 }
 
 export async function fetchCustomers() {
