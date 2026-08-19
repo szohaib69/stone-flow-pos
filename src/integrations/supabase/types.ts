@@ -246,19 +246,43 @@ export type Database = {
       }
       profiles: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           created_at: string
+          email: string | null
+          employee_id: string | null
           full_name: string
           id: string
+          phone: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          status: Database["public"]["Enums"]["account_status"]
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
+          email?: string | null
+          employee_id?: string | null
           full_name?: string
           id: string
+          phone?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          status?: Database["public"]["Enums"]["account_status"]
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
+          email?: string | null
+          employee_id?: string | null
           full_name?: string
           id?: string
+          phone?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          status?: Database["public"]["Enums"]["account_status"]
         }
         Relationships: []
       }
@@ -285,9 +309,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_exists: { Args: never; Returns: boolean }
+      set_account_status: {
+        Args: {
+          _status: Database["public"]["Enums"]["account_status"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
+      account_status: "pending" | "approved" | "rejected" | "suspended"
       app_role: "admin" | "cashier"
       payment_method: "cash" | "bank" | "credit"
       product_category: "marble" | "tiles" | "chips" | "sanitary"
@@ -418,6 +450,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_status: ["pending", "approved", "rejected", "suspended"],
       app_role: ["admin", "cashier"],
       payment_method: ["cash", "bank", "credit"],
       product_category: ["marble", "tiles", "chips", "sanitary"],
