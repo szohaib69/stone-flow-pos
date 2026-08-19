@@ -18,6 +18,7 @@ import { Route as WebsiteCatalogRouteImport } from './routes/website/catalog'
 import { Route as WebsiteContactRouteImport } from './routes/website/contact'
 import { Route as WebsiteTradeRouteImport } from './routes/website/trade'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminCashiersRouteImport } from './routes/_authenticated/admin.cashiers'
 import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin.customers'
 import { Route as AuthenticatedAdminInventoryRouteImport } from './routes/_authenticated/admin.inventory'
 import { Route as AuthenticatedAdminPosRouteImport } from './routes/_authenticated/admin.pos'
@@ -70,6 +71,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminCashiersRoute =
+  AuthenticatedAdminCashiersRouteImport.update({
+    id: '/admin/cashiers',
+    path: '/admin/cashiers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminCustomersRoute =
   AuthenticatedAdminCustomersRouteImport.update({
     id: '/admin/customers',
@@ -119,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/website/contact': typeof WebsiteContactRoute
   '/website/trade': typeof WebsiteTradeRoute
   '/website/': typeof WebsiteIndexRoute
+  '/admin/cashiers': typeof AuthenticatedAdminCashiersRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/inventory': typeof AuthenticatedAdminInventoryRoute
   '/admin/pos': typeof AuthenticatedAdminPosRoute
@@ -136,6 +144,7 @@ export interface FileRoutesByTo {
   '/website/contact': typeof WebsiteContactRoute
   '/website/trade': typeof WebsiteTradeRoute
   '/website': typeof WebsiteIndexRoute
+  '/admin/cashiers': typeof AuthenticatedAdminCashiersRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/inventory': typeof AuthenticatedAdminInventoryRoute
   '/admin/pos': typeof AuthenticatedAdminPosRoute
@@ -155,6 +164,7 @@ export interface FileRoutesById {
   '/website/contact': typeof WebsiteContactRoute
   '/website/trade': typeof WebsiteTradeRoute
   '/website/': typeof WebsiteIndexRoute
+  '/_authenticated/admin/cashiers': typeof AuthenticatedAdminCashiersRoute
   '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/_authenticated/admin/inventory': typeof AuthenticatedAdminInventoryRoute
   '/_authenticated/admin/pos': typeof AuthenticatedAdminPosRoute
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/website/contact'
     | '/website/trade'
     | '/website/'
+    | '/admin/cashiers'
     | '/admin/customers'
     | '/admin/inventory'
     | '/admin/pos'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/website/contact'
     | '/website/trade'
     | '/website'
+    | '/admin/cashiers'
     | '/admin/customers'
     | '/admin/inventory'
     | '/admin/pos'
@@ -209,6 +221,7 @@ export interface FileRouteTypes {
     | '/website/contact'
     | '/website/trade'
     | '/website/'
+    | '/_authenticated/admin/cashiers'
     | '/_authenticated/admin/customers'
     | '/_authenticated/admin/inventory'
     | '/_authenticated/admin/pos'
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/cashiers': {
+      id: '/_authenticated/admin/cashiers'
+      path: '/admin/cashiers'
+      fullPath: '/admin/cashiers'
+      preLoaderRoute: typeof AuthenticatedAdminCashiersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/customers': {
       id: '/_authenticated/admin/customers'
       path: '/admin/customers'
@@ -349,6 +369,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminCashiersRoute: typeof AuthenticatedAdminCashiersRoute
   AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
   AuthenticatedAdminInventoryRoute: typeof AuthenticatedAdminInventoryRoute
   AuthenticatedAdminPosRoute: typeof AuthenticatedAdminPosRoute
@@ -359,6 +380,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminCashiersRoute: AuthenticatedAdminCashiersRoute,
   AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
   AuthenticatedAdminInventoryRoute: AuthenticatedAdminInventoryRoute,
   AuthenticatedAdminPosRoute: AuthenticatedAdminPosRoute,
