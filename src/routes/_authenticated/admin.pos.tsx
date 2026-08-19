@@ -313,7 +313,9 @@ function PosPage() {
               const setQty = (qty: number) =>
                 setLines((prev) =>
                   prev.map((x) =>
-                    x.product.id === l.product.id ? { ...x, qty: Math.max(1, qty) } : x,
+                    x.product.id === l.product.id
+                      ? { ...x, qty: Math.max(box ? 0 : 1, qty) }
+                      : x,
                   ),
                 );
               const cartons = box ? Math.floor(l.qty / box) : 0;
