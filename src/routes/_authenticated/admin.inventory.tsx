@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminOnly } from "@/components/admin/AdminOnly";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +21,11 @@ import { CATEGORIES, currency, fetchProducts, type Category, type Product } from
 import { useRoles } from "@/lib/pos";
 
 export const Route = createFileRoute("/_authenticated/admin/inventory")({
-  component: InventoryPage,
+  component: () => (
+    <AdminOnly title="Inventory">
+      <InventoryPage />
+    </AdminOnly>
+  ),
 });
 
 type Draft = {

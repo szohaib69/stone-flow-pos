@@ -31,13 +31,20 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [adminExists, setAdminExists] = useState<boolean | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/admin", replace: true });
     });
+    supabase.rpc("admin_exists").then(({ data }) => setAdminExists(data !== false));
   }, [navigate]);
+
+  // Until the first admin exists, the sign-up form is the one-time owner setup.
+  const isAdminSetup = mode === "signup" && adminExists === false;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,10 +56,15 @@ function AuthPage() {
           password,
           options: {
             emailRedirectTo: window.location.origin + "/admin",
-            data: { full_name: fullName },
+            data: { full_name: fullName, phone, employee_id: employeeId },
           },
         });
         if (error) throw error;
+        if (!isAdminSetup) {
+          toast.success(
+            "Your cashier registration request has been submitted. Please wait for Admin approval.",
+          );
+        }
         if (!data.session) {
           toast.success("Check your email to confirm your account.");
           return;
@@ -88,23 +100,55 @@ function AuthPage() {
         <Link to="/website" className="eyebrow text-brass">
           City Tiles
         </Link>
-        <h1 className="mt-5 text-3xl">{mode === "signin" ? "Staff sign in" : "Create staff account"}</h1>
+        <h1 className="mt-5 text-3xl">
+          {mode === "signin"
+            ? "Staff sign in"
+            : isAdminSetup
+              ? "First-time admin setup"
+              : "Register as cashier"}
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Access to the point-of-sale, inventory and sales reports.
+          {mode === "signin"
+            ? "Access to the point-of-sale, inventory and sales reports."
+            : isAdminSetup
+              ? "No admin account exists yet. This one-time setup creates the single owner account."
+              : "Submit a cashier request. The admin must approve it before you can use the POS."}
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           {mode === "signup" && (
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full name</Label>
-              <Input
-                id="fullName"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-                maxLength={100}
-              />
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Full name</Label>
+                <Input
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  maxLength={100}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone (optional)</Label>
+                <Input
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  maxLength={30}
+                />
+              </div>
+              {!isAdminSetup && (
+                <div className="space-y-2">
+                  <Label htmlFor="employeeId">Employee ID (optional)</Label>
+                  <Input
+                    id="employeeId"
+                    value={employeeId}
+                    onChange={(e) => setEmployeeId(e.target.value)}
+                    maxLength={50}
+                  />
+                </div>
+              )}
+            </>
           )}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -129,7 +173,13 @@ function AuthPage() {
             />
           </div>
           <Button type="submit" variant="brass" size="xl" className="w-full" disabled={loading}>
-            {loading ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
+            {loading
+              ? "Please wait…"
+              : mode === "signin"
+                ? "Sign in"
+                : isAdminSetup
+                  ? "Create admin account"
+                  : "Submit cashier request"}
           </Button>
         </form>
 
@@ -147,7 +197,9 @@ function AuthPage() {
           className="mt-6 w-full text-sm text-muted-foreground hover:text-brass"
         >
           {mode === "signin"
-            ? "No account yet? Create one"
+            ? adminExists === false
+              ? "No admin yet? Run first-time admin setup"
+              : "No account yet? Register as cashier"
             : "Already have an account? Sign in"}
         </button>
       </div>

@@ -1,15 +1,24 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { TrendingUp, Package, AlertTriangle, Wallet } from "lucide-react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { currency, fetchProducts } from "@/lib/catalog";
-import { fetchInvoices, formatDate } from "@/lib/pos";
+import { fetchInvoices, formatDate, useIsAdmin, useRoles } from "@/lib/pos";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
-  component: DashboardPage,
+  component: DashboardGate,
 });
+
+// Cashiers have no dashboard access — send them straight to the sales screen.
+function DashboardGate() {
+  const { isLoading } = useRoles();
+  const isAdmin = useIsAdmin();
+  if (isLoading) return null;
+  if (!isAdmin) return <Navigate to="/admin/pos" replace />;
+  return <DashboardPage />;
+}
 
 function sumBetween(invoices: { created_at: string; total: number }[], days: number) {
   const from = Date.now() - days * 24 * 60 * 60 * 1000;

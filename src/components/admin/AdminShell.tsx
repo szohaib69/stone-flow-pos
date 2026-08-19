@@ -9,6 +9,7 @@ import {
   LogOut,
   Store,
   BarChart3,
+  UserCog,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -17,12 +18,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRoles, useSession } from "@/lib/pos";
 
 const NAV = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true, adminOnly: true },
   { to: "/admin/pos", label: "Point of Sale", icon: ScanBarcode },
-  { to: "/admin/inventory", label: "Inventory", icon: Boxes },
+  { to: "/admin/inventory", label: "Inventory", icon: Boxes, adminOnly: true },
   { to: "/admin/customers", label: "Customers", icon: Users },
   { to: "/admin/invoices", label: "Invoices", icon: ReceiptText },
-  { to: "/admin/reports", label: "Reports", icon: BarChart3 },
+  { to: "/admin/reports", label: "Reports", icon: BarChart3, adminOnly: true },
+  { to: "/admin/cashiers", label: "Cashiers", icon: UserCog, adminOnly: true },
 ];
 
 export function AdminShell({
@@ -38,6 +40,8 @@ export function AdminShell({
   const queryClient = useQueryClient();
   const { data: user } = useSession();
   const { data: roles } = useRoles();
+  const isAdmin = (roles ?? []).includes("admin");
+  const nav = NAV.filter((item) => !item.adminOnly || isAdmin);
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -54,7 +58,7 @@ export function AdminShell({
           <span className="font-display text-lg leading-none">City Tiles POS</span>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:overflow-visible">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link
               key={item.to}
               to={item.to}
