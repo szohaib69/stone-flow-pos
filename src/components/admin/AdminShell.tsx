@@ -20,7 +20,7 @@ import { useRoles, useSession } from "@/lib/pos";
 const NAV = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true, adminOnly: true },
   { to: "/admin/pos", label: "Point of Sale", icon: ScanBarcode },
-  { to: "/admin/inventory", label: "Inventory", icon: Boxes, adminOnly: true },
+  { to: "/admin/inventory", label: "Inventory", icon: Boxes },
   { to: "/admin/customers", label: "Customers", icon: Users },
   { to: "/admin/invoices", label: "Invoices", icon: ReceiptText },
   { to: "/admin/reports", label: "Reports", icon: BarChart3, adminOnly: true },
