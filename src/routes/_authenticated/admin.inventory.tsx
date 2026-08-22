@@ -345,7 +345,13 @@ function InventoryPage() {
         else newIdsFromImport.push(...(data ?? []).map((d) => d.id as string));
       }
 
-      if (!updated && !newIdsFromImport.length && errors.length) throw new Error(errors[0]);
+      if (!updated && !newIdsFromImport.length) {
+        if (errors.length) throw new Error(errors[0]);
+        throw new Error(
+          `Nothing imported — ${rows.length} row(s) read but none had a usable Name or Stock code.`,
+        );
+      }
+
 
       return { created: newIdsFromImport.length, updated, skipped, errors, ids: newIdsFromImport };
     },
