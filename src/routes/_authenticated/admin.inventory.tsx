@@ -171,13 +171,18 @@ function InventoryPage() {
         low_stock_threshold: Number(draft.low_stock_threshold) || 0,
       };
       if (!payload.name) throw new Error("Product name is required");
-      const { error } = editing
-        ? await supabase.from("products").update(payload).eq("id", editing.id)
-        : await supabase.from("products").insert(payload);
+      if (editing) {
+        const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
+        if (error) throw error;
+        return null;
+      }
+      const { data, error } = await supabase.from("products").insert(payload).select("id").single();
       if (error) throw error;
+      return (data?.id as string) ?? null;
     },
-    onSuccess: () => {
+    onSuccess: (id) => {
       toast.success(editing ? "Product updated" : "Product added");
+      if (id) markNew([id]);
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setOpen(false);
       setEditing(null);
@@ -185,6 +190,7 @@ function InventoryPage() {
     },
     onError: (err: Error) => toast.error(err.message),
   });
+
 
   const remove = useMutation({
     mutationFn: async (product: Product) => {
