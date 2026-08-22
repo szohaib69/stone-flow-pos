@@ -83,6 +83,28 @@ const EXPORT_COLUMNS = [
   "Description",
 ] as const;
 
+const NEW_KEY = "inventory-new-products";
+
+const norm = (s: string) => s.toLowerCase().replace(/[\s._-]+/g, "");
+
+function readCell(row: Record<string, unknown>, keys: string[]) {
+  const wanted = keys.map(norm);
+  for (const k of Object.keys(row)) {
+    if (wanted.includes(norm(k))) {
+      const v = row[k];
+      if (v === null || v === undefined) continue;
+      const s = String(v).trim();
+      if (s !== "") return s;
+    }
+  }
+  return "";
+}
+
+const toNumber = (v: string) => {
+  const n = Number(String(v).replace(/[^0-9.-]/g, ""));
+  return Number.isFinite(n) ? n : 0;
+};
+
 function InventoryPage() {
   const queryClient = useQueryClient();
   const { data: products = [], isLoading } = useQuery({
@@ -98,6 +120,37 @@ function InventoryPage() {
   const [filter, setFilter] = useState<Category | "all">("all");
   const [search, setSearch] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [newIds, setNewIds] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(localStorage.getItem(NEW_KEY) ?? "[]") as string[];
+    } catch {
+      return [];
+    }
+  });
+
+  const markNew = (ids: string[]) => {
+    if (!ids.length) return;
+    setNewIds((prev) => {
+      const next = Array.from(new Set([...prev, ...ids]));
+      try {
+        localStorage.setItem(NEW_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
+  const clearNew = () => {
+    setNewIds([]);
+    try {
+      localStorage.removeItem(NEW_KEY);
+    } catch {
+      /* ignore */
+    }
+  };
+
 
   const save = useMutation({
     mutationFn: async () => {
