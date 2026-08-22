@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useMyProfile, useRoles, useSession } from "@/lib/pos";
+import { useMyProfile, useRoles } from "@/lib/pos";
 
 function Notice({ icon: Icon, title, body }: { icon: typeof Clock; title: string; body: string }) {
   const navigate = useNavigate();
@@ -33,12 +33,11 @@ function Notice({ icon: Icon, title, body }: { icon: typeof Clock; title: string
 }
 
 export function AccessGate({ children }: { children: ReactNode }) {
-  const { data: user, isLoading: sessionLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useMyProfile();
   const { data: roles, isLoading: rolesLoading } = useRoles();
   const isAdmin = (roles ?? []).includes("admin");
 
-  if (sessionLoading || (user && (profileLoading || rolesLoading))) {
+  if (profileLoading || rolesLoading) {
     return <div className="p-10 text-sm text-muted-foreground">Checking your account…</div>;
   }
 
