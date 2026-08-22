@@ -461,7 +461,22 @@ function InventoryPage() {
         ) : null
       }
     >
+      {newIds.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/40 bg-primary/10 px-4 py-3">
+          <p className="text-sm">
+            <span className="font-medium">{newIds.length} new product{newIds.length > 1 ? "s" : ""} added</span>{" "}
+            <span className="text-muted-foreground">
+              — marked “New” below. This notice shows once.
+            </span>
+          </p>
+          <Button size="sm" variant="outline" onClick={clearNew}>
+            Dismiss
+          </Button>
+        </div>
+      )}
+
       <div className="relative mb-4">
+
         <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
         <Input
           className="pl-9"
