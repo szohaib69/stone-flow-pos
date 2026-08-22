@@ -261,14 +261,23 @@ function InventoryPage() {
   const importRows = useMutation({
     mutationFn: async (file: File) => {
       const book = XLSX.read(await file.arrayBuffer(), { type: "array" });
-      const sheetName = book.SheetNames[0];
-      if (!sheetName) throw new Error("That file has no sheets.");
-      const sheet = book.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
-        defval: "",
-        raw: false,
-      });
-      if (!rows.length) throw new Error("No rows found. Row 1 must contain the column headers.");
+      // Use the first sheet that actually contains a recognisable header row.
+      let rows: Record<string, unknown>[] = [];
+      for (const sheetName of book.SheetNames) {
+        const sheet = book.Sheets[sheetName];
+        if (!sheet) continue;
+        const parsed = sheetToRecords(sheet);
+        if (parsed.length) {
+          rows = parsed;
+          break;
+        }
+      }
+      if (!rows.length)
+        throw new Error(
+          "No data rows found. Make sure one row holds the column headers (Stock code, Name, Category…) with product rows underneath.",
+        );
+
+
 
       // Always compare against the latest DB state, not a cached list.
       const { data: existingRows, error: fetchErr } = await supabase
