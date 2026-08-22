@@ -529,7 +529,15 @@ function InventoryPage() {
             {rows.map((p) => (
               <tr key={p.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-3">
-                  <p className="font-medium">{p.name}</p>
+                  <p className="font-medium">
+                    {p.name}
+                    {newIds.includes(p.id) && (
+                      <span className="ml-2 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                        New
+                      </span>
+                    )}
+                  </p>
+
                   <p className="text-xs text-muted-foreground">{p.sku ?? "—"}</p>
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
