@@ -108,6 +108,57 @@ const toNumber = (v: string) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+const HEADER_ALIASES = [
+  "stockcode",
+  "sku",
+  "code",
+  "name",
+  "product",
+  "category",
+  "colour",
+  "color",
+  "size",
+  "unit",
+  "price",
+  "stockqty",
+  "qty",
+  "quantity",
+  "tilespercarton",
+  "piecespercarton",
+  "lowstockalert",
+  "description",
+];
+
+/** Reads a sheet that may have blank leading rows, a title row, or repeated header rows. */
+function sheetToRecords(sheet: XLSX.WorkSheet): Record<string, unknown>[] {
+  const grid = XLSX.utils.sheet_to_json<unknown[]>(sheet, {
+    header: 1,
+    defval: "",
+    raw: false,
+    blankrows: false,
+  });
+  const isHeaderRow = (row: unknown[]) => {
+    const cells = row.map((c) => norm(String(c ?? "")));
+    const hits = cells.filter((c) => c && HEADER_ALIASES.includes(c)).length;
+    return hits >= 2;
+  };
+  const headerIndex = grid.findIndex(isHeaderRow);
+  if (headerIndex === -1) return [];
+  const headers = (grid[headerIndex] ?? []).map((c) => String(c ?? "").trim());
+  const out: Record<string, unknown>[] = [];
+  for (const row of grid.slice(headerIndex + 1)) {
+    if (!row.some((c) => String(c ?? "").trim() !== "")) continue;
+    if (isHeaderRow(row)) continue; // repeated header row
+    const rec: Record<string, unknown> = {};
+    headers.forEach((h, i) => {
+      if (h) rec[h] = row[i];
+    });
+    out.push(rec);
+  }
+  return out;
+}
+
+
 function InventoryPage() {
   const queryClient = useQueryClient();
   const { data: products = [], isLoading } = useQuery({
@@ -210,14 +261,23 @@ function InventoryPage() {
   const importRows = useMutation({
     mutationFn: async (file: File) => {
       const book = XLSX.read(await file.arrayBuffer(), { type: "array" });
-      const sheetName = book.SheetNames[0];
-      if (!sheetName) throw new Error("That file has no sheets.");
-      const sheet = book.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
-        defval: "",
-        raw: false,
-      });
-      if (!rows.length) throw new Error("No rows found. Row 1 must contain the column headers.");
+      // Use the first sheet that actually contains a recognisable header row.
+      let rows: Record<string, unknown>[] = [];
+      for (const sheetName of book.SheetNames) {
+        const sheet = book.Sheets[sheetName];
+        if (!sheet) continue;
+        const parsed = sheetToRecords(sheet);
+        if (parsed.length) {
+          rows = parsed;
+          break;
+        }
+      }
+      if (!rows.length)
+        throw new Error(
+          "No data rows found. Make sure one row holds the column headers (Stock code, Name, Category…) with product rows underneath.",
+        );
+
+
 
       // Always compare against the latest DB state, not a cached list.
       const { data: existingRows, error: fetchErr } = await supabase
@@ -285,7 +345,13 @@ function InventoryPage() {
         else newIdsFromImport.push(...(data ?? []).map((d) => d.id as string));
       }
 
-      if (!updated && !newIdsFromImport.length && errors.length) throw new Error(errors[0]);
+      if (!updated && !newIdsFromImport.length) {
+        if (errors.length) throw new Error(errors[0]);
+        throw new Error(
+          `Nothing imported — ${rows.length} row(s) read but none had a usable Name or Stock code.`,
+        );
+      }
+
 
       return { created: newIdsFromImport.length, updated, skipped, errors, ids: newIdsFromImport };
     },
