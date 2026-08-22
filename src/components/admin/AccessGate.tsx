@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useMyProfile } from "@/lib/pos";
+import { useMyProfile, useRoles } from "@/lib/pos";
 
 function Notice({ icon: Icon, title, body }: { icon: typeof Clock; title: string; body: string }) {
   const navigate = useNavigate();
