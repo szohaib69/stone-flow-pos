@@ -33,18 +33,18 @@ function Notice({ icon: Icon, title, body }: { icon: typeof Clock; title: string
 }
 
 export function AccessGate({ children }: { children: ReactNode }) {
-  const { data: profile, isLoading } = useMyProfile();
+  const { data: profile, isLoading: profileLoading } = useMyProfile();
   const { data: roles, isLoading: rolesLoading } = useRoles();
   const isAdmin = (roles ?? []).includes("admin");
 
-  if (isLoading || rolesLoading) {
+  if (profileLoading || rolesLoading) {
     return <div className="p-10 text-sm text-muted-foreground">Checking your account…</div>;
   }
 
   // Admins are never gated by approval status.
   if (isAdmin) return <>{children}</>;
 
-  const status = profile?.status ?? "pending";
+  const status = profile?.status;
 
   if (status === "pending") {
     return (
