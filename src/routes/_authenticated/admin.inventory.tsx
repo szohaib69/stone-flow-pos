@@ -108,6 +108,57 @@ const toNumber = (v: string) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+const HEADER_ALIASES = [
+  "stockcode",
+  "sku",
+  "code",
+  "name",
+  "product",
+  "category",
+  "colour",
+  "color",
+  "size",
+  "unit",
+  "price",
+  "stockqty",
+  "qty",
+  "quantity",
+  "tilespercarton",
+  "piecespercarton",
+  "lowstockalert",
+  "description",
+];
+
+/** Reads a sheet that may have blank leading rows, a title row, or repeated header rows. */
+function sheetToRecords(sheet: XLSX.WorkSheet): Record<string, unknown>[] {
+  const grid = XLSX.utils.sheet_to_json<unknown[]>(sheet, {
+    header: 1,
+    defval: "",
+    raw: false,
+    blankrows: false,
+  });
+  const isHeaderRow = (row: unknown[]) => {
+    const cells = row.map((c) => norm(String(c ?? "")));
+    const hits = cells.filter((c) => c && HEADER_ALIASES.includes(c)).length;
+    return hits >= 2;
+  };
+  const headerIndex = grid.findIndex(isHeaderRow);
+  if (headerIndex === -1) return [];
+  const headers = (grid[headerIndex] ?? []).map((c) => String(c ?? "").trim());
+  const out: Record<string, unknown>[] = [];
+  for (const row of grid.slice(headerIndex + 1)) {
+    if (!row.some((c) => String(c ?? "").trim() !== "")) continue;
+    if (isHeaderRow(row)) continue; // repeated header row
+    const rec: Record<string, unknown> = {};
+    headers.forEach((h, i) => {
+      if (h) rec[h] = row[i];
+    });
+    out.push(rec);
+  }
+  return out;
+}
+
+
 function InventoryPage() {
   const queryClient = useQueryClient();
   const { data: products = [], isLoading } = useQuery({
