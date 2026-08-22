@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { CATEGORIES, currency, fetchProducts, type Category, type Product } from "@/lib/catalog";
 import { useRoles } from "@/lib/pos";
 
@@ -82,6 +83,8 @@ const EXPORT_COLUMNS = [
   "Low stock alert",
   "Description",
 ] as const;
+
+type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
 
 const NEW_KEY = "inventory-new-products";
 
@@ -229,7 +232,7 @@ function InventoryPage() {
       }
 
       const valid = new Set(CATEGORIES.map((c) => c.key));
-      const inserts: Record<string, unknown>[] = [];
+      const inserts: ProductInsert[] = [];
       let updated = 0;
       let skipped = 0;
       const errors: string[] = [];
