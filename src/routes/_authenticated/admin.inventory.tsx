@@ -207,62 +207,96 @@ function InventoryPage() {
   const importRows = useMutation({
     mutationFn: async (file: File) => {
       const book = XLSX.read(await file.arrayBuffer(), { type: "array" });
-      const sheet = book.Sheets[book.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
-      const pick = (row: Record<string, unknown>, ...keys: string[]) => {
-        for (const key of keys) {
-          const found = Object.keys(row).find(
-            (k) => k.trim().toLowerCase() === key.toLowerCase(),
-          );
-          if (found && String(row[found]).trim() !== "") return String(row[found]).trim();
-        }
-        return "";
-      };
-      const valid = new Set(CATEGORIES.map((c) => c.key));
-      let created = 0;
-      let updated = 0;
+      const sheetName = book.SheetNames[0];
+      if (!sheetName) throw new Error("That file has no sheets.");
+      const sheet = book.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
+        defval: "",
+        raw: false,
+      });
+      if (!rows.length) throw new Error("No rows found. Row 1 must contain the column headers.");
 
-      for (const row of rows) {
-        const sku = pick(row, "Stock code", "sku", "code");
-        const name = pick(row, "Name", "product") || sku;
-        if (!name) continue;
-        const rawCategory = pick(row, "Category").toLowerCase();
+      // Always compare against the latest DB state, not a cached list.
+      const { data: existingRows, error: fetchErr } = await supabase
+        .from("products")
+        .select("id, name, sku");
+      if (fetchErr) throw fetchErr;
+      const bySku = new Map<string, string>();
+      const byName = new Map<string, string>();
+      for (const p of existingRows ?? []) {
+        if (p.sku) bySku.set(String(p.sku).trim().toLowerCase(), p.id);
+        byName.set(String(p.name).trim().toLowerCase(), p.id);
+      }
+
+      const valid = new Set(CATEGORIES.map((c) => c.key));
+      const inserts: Record<string, unknown>[] = [];
+      let updated = 0;
+      let skipped = 0;
+      const errors: string[] = [];
+
+      for (const [i, row] of rows.entries()) {
+        const sku = readCell(row, ["Stock code", "stockcode", "sku", "code"]);
+        const name = readCell(row, ["Name", "product", "productname", "title"]) || sku;
+        if (!name) {
+          skipped += 1;
+          continue;
+        }
+        const rawCategory = readCell(row, ["Category", "type"]).toLowerCase();
         const category = (valid.has(rawCategory as Category) ? rawCategory : "tiles") as Category;
-        const perCarton = Number(pick(row, "Tiles per carton", "pieces_per_carton")) || 0;
+        const perCarton = toNumber(
+          readCell(row, ["Tiles per carton", "piecespercarton", "percarton"]),
+        );
         const payload = {
           name,
           sku: sku || null,
           category,
-          description: pick(row, "Description"),
-          color: pick(row, "Colour", "Color") || null,
-          size: pick(row, "Size") || null,
-          unit: pick(row, "Unit") || (category === "tiles" ? "tile" : "unit"),
-          price: Number(pick(row, "Price")) || 0,
-          stock_qty: Number(pick(row, "Stock qty", "Stock")) || 0,
+          description: readCell(row, ["Description", "notes"]),
+          color: readCell(row, ["Colour", "Color"]) || null,
+          size: readCell(row, ["Size"]) || null,
+          unit: readCell(row, ["Unit"]) || (category === "tiles" ? "tile" : "unit"),
+          price: toNumber(readCell(row, ["Price", "rate", "unitprice"])),
+          stock_qty: toNumber(readCell(row, ["Stock qty", "Stock", "quantity", "qty"])),
           pieces_per_carton: category === "tiles" && perCarton > 0 ? perCarton : null,
-          low_stock_threshold: Number(pick(row, "Low stock alert", "low_stock_threshold")) || 10,
+          low_stock_threshold:
+            toNumber(readCell(row, ["Low stock alert", "lowstockthreshold", "lowstock"])) || 10,
         };
-        const existing = sku
-          ? products.find((p) => (p.sku ?? "").toLowerCase() === sku.toLowerCase())
-          : products.find((p) => p.name.toLowerCase() === name.toLowerCase());
-        if (existing) {
-          const { error } = await supabase.from("products").update(payload).eq("id", existing.id);
-          if (error) throw error;
-          updated += 1;
+
+        const key = sku ? sku.toLowerCase() : name.toLowerCase();
+        const existingId = sku ? bySku.get(key) : byName.get(key);
+        if (existingId) {
+          const { error } = await supabase.from("products").update(payload).eq("id", existingId);
+          if (error) errors.push(`Row ${i + 2}: ${error.message}`);
+          else updated += 1;
         } else {
-          const { error } = await supabase.from("products").insert(payload);
-          if (error) throw error;
-          created += 1;
+          inserts.push(payload);
+          if (sku) bySku.set(key, "pending");
+          else byName.set(key, "pending");
         }
       }
-      return { created, updated };
+
+      const newIdsFromImport: string[] = [];
+      for (let i = 0; i < inserts.length; i += 200) {
+        const chunk = inserts.slice(i, i + 200);
+        const { data, error } = await supabase.from("products").insert(chunk).select("id");
+        if (error) errors.push(`Insert batch ${i / 200 + 1}: ${error.message}`);
+        else newIdsFromImport.push(...(data ?? []).map((d) => d.id as string));
+      }
+
+      if (!updated && !newIdsFromImport.length && errors.length) throw new Error(errors[0]);
+
+      return { created: newIdsFromImport.length, updated, skipped, errors, ids: newIdsFromImport };
     },
-    onSuccess: ({ created, updated }) => {
-      toast.success(`Import complete — ${created} added, ${updated} updated`);
+    onSuccess: ({ created, updated, skipped, errors, ids }) => {
+      markNew(ids);
+      toast.success(
+        `Import complete — ${created} added, ${updated} updated${skipped ? `, ${skipped} skipped` : ""}`,
+      );
+      if (errors.length) toast.error(`${errors.length} row(s) failed. ${errors[0]}`);
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
-    onError: (err: Error) => toast.error(err.message),
+    onError: (err: Error) => toast.error(err.message || "Import failed"),
   });
+
 
   function exportExcel() {
     const data = rows.map((p) => ({
